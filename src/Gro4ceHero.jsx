@@ -8,7 +8,6 @@ import image06 from "../assets/6.jpg";
 import image07 from "../assets/7.jpg";
 import image08 from "../assets/8.jpg";
 import image09 from "../assets/9.jpg";
-import image10 from "../assets/10.jpg";
 import image11 from "../assets/11.jpg";
 import "./Gro4ceHero.css";
 
@@ -118,16 +117,6 @@ const services = [
     summary: "A practical, year-long business programme for students aged 13–18.",
     description: `Teen Master of Business is Sri Lanka's first school-embedded, credit-bearing business education programme built for secondary school students aged 13–18. Across a structured year based on Learn It, Apply It, and Live It, students complete 12 modules spanning entrepreneurship, market research, business models, financial literacy, marketing, leadership, digital business and AI, ethics, pitching, design thinking, and business law before launching a real micro-enterprise and pitching to business judges.`,
     capabilities: ["Twelve practical business modules", "Project-based learning", "Live micro-enterprise capstone", "Student and school enrolment guidance"],
-  },
-  {
-    id: "senela-jayasuriya",
-    name: "Senela Jayasuriya",
-    category: "Leadership and coaching",
-    image: image10,
-    accent: "#f0ec54",
-    summary: "Explore Senela's work across leadership, innovation, DEI, and heart-centred coaching.",
-    description: `Senela Jayasuriya's work brings together leadership, innovation, diversity, equity and inclusion, and heart-centred coaching. This experience supports individuals, teams, and organisations seeking purposeful growth and practical transformation. The digital experience helps prospective collaborators understand her approach, explore speaking, training, workshop, and partnership opportunities, and identify the most relevant way to engage with her team.`,
-    capabilities: ["Leadership development", "Innovation and DEI", "Heart-centred coaching", "Speaking and workshop enquiries"],
   },
   {
     id: "personal-branding-ai",
@@ -497,9 +486,9 @@ function CommandPanel({ onSelect }) {
             <span className="command-panel__kicker">AI services command center</span>
             <h2>Connected operations</h2>
           </div>
-          <div className="system-status" aria-label="Eleven services available">
+          <div className="system-status" aria-label="Ten services available">
             <span className="system-status__dot" aria-hidden="true" />
-            <span><small>Service status</small>11 Available</span>
+            <span><small>Service status</small>10 Available</span>
           </div>
         </header>
 
