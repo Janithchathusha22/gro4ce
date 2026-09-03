@@ -3,6 +3,11 @@ import legalPartnersImage from "../assets/_Lanka legal partners.png";
 import academyImage from "../assets/accadamic-optimized.jpg";
 import electroMartImage from "../assets/elector_mart.PNG";
 import salonImage from "../assets/salon.png";
+import sentinelInsuranceImage from "../assets/Sentinel_Insurance.png";
+import meridianFinanceImage from "../assets/Meridian_Finance.png";
+import carloopImage from "../assets/carloop.jpg";
+import ceylonKulubaduImage from "../assets/Ceylon Kulubadu.png";
+import personalBrandingImage from "../assets/Personal_Brading AI.jpg";
 import academyProfile from "../assets/AL_Academy_SL_Company_Profile.docx.pdf";
 import electroMartProfile from "../assets/Lanka_Electro_Mart_Company_Profile.docx.pdf";
 import legalPartnersProfile from "../assets/Lanka_Legal_Partners_Company_Profile.docx.pdf";
@@ -59,12 +64,59 @@ const services = [
     downloadName: "Lanka_Glow_Salon_Company_Profile.pdf",
   },
   {
-    ...primaryServices[1],
-    id: `${primaryServices[1].id}-secondary`,
+    id: "sentinel-insurance",
+    name: "Sentinel Insurance",
+    category: "Insurance services",
+    image: sentinelInsuranceImage,
+    imageWidth: 1024,
+    imageHeight: 1024,
+    imageFit: "contain",
+    profile: sentinelInsuranceImage,
+    downloadName: "Sentinel_Insurance.png",
   },
   {
-    ...primaryServices[2],
-    id: `${primaryServices[2].id}-secondary`,
+    id: "meridian-finance",
+    name: "Meridian Finance",
+    category: "Financial services",
+    image: meridianFinanceImage,
+    imageWidth: 1024,
+    imageHeight: 1024,
+    imageFit: "contain",
+    profile: meridianFinanceImage,
+    downloadName: "Meridian_Finance.png",
+  },
+  {
+    id: "carloop",
+    name: "Carloop",
+    category: "Automotive assistant",
+    image: carloopImage,
+    imageWidth: 2752,
+    imageHeight: 1536,
+    imageFit: "cover",
+    webhook: "http://localhost:5678/webhook/carloop-chat",
+    welcomeMessage: "Welcome to Carloop. How can I help you today?",
+  },
+  {
+    id: "ceylon-kulubadu",
+    name: "Ceylon Kulubadu",
+    category: "Culinary assistant",
+    image: ceylonKulubaduImage,
+    imageWidth: 1536,
+    imageHeight: 1024,
+    imageFit: "cover",
+    webhook: "http://localhost:5678/webhook/ceylon-chat",
+    welcomeMessage: "Welcome to Ceylon Kulubadu. How can I help you today?",
+  },
+  {
+    id: "personal-branding-ai",
+    name: "Personal Branding AI",
+    category: "Branding assistant",
+    image: personalBrandingImage,
+    imageWidth: 2752,
+    imageHeight: 1536,
+    imageFit: "cover",
+    webhook: "http://localhost:5678/webhook/personal-branding-chat-v6",
+    welcomeMessage: "Welcome to Personal Branding AI. How can I help you today?",
   },
 ];
 
@@ -155,55 +207,6 @@ function createSessionReference(message) {
   return `G4C-${String((hash >>> 0) % 10000).padStart(4, "0")}`;
 }
 
-function ContactPrompt({ onContinue }) {
-  const [message, setMessage] = useState("");
-
-  const handleSubmit = (event) => {
-    event.preventDefault();
-
-    const trimmedMessage = message.trim();
-
-    if (trimmedMessage) {
-      onContinue(trimmedMessage);
-    }
-  };
-
-  return (
-    <form className="contact-prompt" onSubmit={handleSubmit}>
-      <span className="contact-prompt__trace" aria-hidden="true" />
-
-      <span className="contact-prompt__icon" aria-hidden="true">
-        <svg viewBox="0 0 24 24">
-          <path d="M6.5 17.5 4 20v-5.2A7.4 7.4 0 0 1 3 11c0-4.4 4-8 9-8s9 3.6 9 8-4 8-9 8c-2 0-3.9-.5-5.5-1.5Z" />
-          <path d="M8 11h.01M12 11h.01M16 11h.01" />
-        </svg>
-      </span>
-
-      <label className="sr-only" htmlFor="gro4ce-contact-prompt">
-        Contact us
-      </label>
-      <span
-        className={`contact-prompt__placeholder ${message ? "is-hidden" : ""}`}
-        aria-hidden="true"
-      >
-        Contact us<span className="contact-prompt__caret" />
-      </span>
-      <input
-        id="gro4ce-contact-prompt"
-        type="text"
-        value={message}
-        onChange={(event) => setMessage(event.target.value)}
-        autoComplete="off"
-      />
-
-      <button type="submit" disabled={!message.trim()} aria-label="Start chat with Gro4ce">
-        <span>Start chat</span>
-        <ContinueIcon />
-      </button>
-    </form>
-  );
-}
-
 function AgentAvatar() {
   return (
     <span className="agent-avatar" aria-hidden="true">
@@ -229,6 +232,185 @@ function ThinkingIndicator() {
       <i />
       <i />
     </span>
+  );
+}
+
+function getWebhookReply(payload) {
+  const data = Array.isArray(payload) ? payload[0] : payload;
+
+  if (typeof data === "string") return data;
+
+  return (
+    data?.output ??
+    data?.text ??
+    data?.message ??
+    data?.response ??
+    data?.answer ??
+    "Your request was received, but the assistant returned an empty response."
+  );
+}
+
+function ServiceChatPage({ service, onBack }) {
+  const titleRef = useRef(null);
+  const streamRef = useRef(null);
+  const [input, setInput] = useState("");
+  const [messages, setMessages] = useState([
+    { id: "welcome", role: "agent", text: service.welcomeMessage },
+  ]);
+  const [isSending, setIsSending] = useState(false);
+  const sessionId = useRef(
+    globalThis.crypto?.randomUUID?.() ?? `${service.id}-${Date.now()}`,
+  );
+
+  useEffect(() => {
+    titleRef.current?.focus();
+  }, []);
+
+  useEffect(() => {
+    streamRef.current?.scrollTo({
+      top: streamRef.current.scrollHeight,
+      behavior: "smooth",
+    });
+  }, [messages, isSending]);
+
+  const sendMessage = async (event) => {
+    event.preventDefault();
+    const chatInput = input.trim();
+
+    if (!chatInput || isSending) return;
+
+    setInput("");
+    setMessages((current) => [
+      ...current,
+      { id: `${Date.now()}-user`, role: "user", text: chatInput },
+    ]);
+    setIsSending(true);
+
+    try {
+      const response = await fetch(service.webhook, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "sendMessage",
+          sessionId: sessionId.current,
+          chatInput,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Webhook returned ${response.status}`);
+      }
+
+      const contentType = response.headers.get("content-type") ?? "";
+      const payload = contentType.includes("application/json")
+        ? await response.json()
+        : await response.text();
+
+      setMessages((current) => [
+        ...current,
+        {
+          id: `${Date.now()}-agent`,
+          role: "agent",
+          text: getWebhookReply(payload),
+        },
+      ]);
+    } catch (error) {
+      setMessages((current) => [
+        ...current,
+        {
+          id: `${Date.now()}-error`,
+          role: "agent",
+          text: `I couldn't reach the ${service.name} assistant. Please check that its workflow is active and try again.`,
+          error: true,
+        },
+      ]);
+      console.error(`${service.name} webhook error:`, error);
+    } finally {
+      setIsSending(false);
+    }
+  };
+
+  return (
+    <main className="contact-page">
+      <BackgroundEffects />
+
+      <nav className="contact-page__nav" aria-label={`${service.name} chat navigation`}>
+        <button type="button" onClick={onBack} className="contact-page__back">
+          <span aria-hidden="true">←</span> Back to services
+        </button>
+        <span className="contact-page__brand">
+          <BrandMark />
+        </span>
+        <span className="contact-page__secure">
+          <i aria-hidden="true" /> Connected
+        </span>
+      </nav>
+
+      <section className="conversation-panel" aria-labelledby="service-chat-title">
+        <header className="conversation-panel__header">
+          <div className="conversation-agent">
+            <AgentAvatar />
+            <span>
+              <small>{service.name}</small>
+              <h1 id="service-chat-title" ref={titleRef} tabIndex="-1">
+                AI Assistant
+              </h1>
+            </span>
+          </div>
+          <div className="conversation-panel__status">
+            <i aria-hidden="true" /> Online
+          </div>
+        </header>
+
+        <div className="conversation-stream" ref={streamRef}>
+          <div className="conversation-date" aria-hidden="true">
+            <span>Conversation opened</span>
+          </div>
+
+          {messages.map((message) => (
+            <div key={message.id} className={`message-row message-row--${message.role}`}>
+              {message.role === "agent" && <AgentAvatar />}
+              <div
+                className={`message-bubble message-bubble--${message.role}${message.error ? " is-error" : ""}`}
+              >
+                <span className="message-bubble__label">
+                  {message.role === "user" ? "You" : service.name}
+                </span>
+                <p>{message.text}</p>
+                <small>Just now</small>
+              </div>
+            </div>
+          ))}
+
+          {isSending && (
+            <div className="message-row message-row--agent">
+              <AgentAvatar />
+              <div className="message-bubble message-bubble--agent" role="status">
+                <span className="message-bubble__label">{service.name}</span>
+                <ThinkingIndicator />
+              </div>
+            </div>
+          )}
+        </div>
+
+        <form className="chat-composer" onSubmit={sendMessage}>
+          <label className="sr-only" htmlFor="service-chat-input">
+            Message {service.name}
+          </label>
+          <input
+            id="service-chat-input"
+            value={input}
+            onChange={(event) => setInput(event.target.value)}
+            placeholder="Type your message..."
+            autoComplete="off"
+            disabled={isSending}
+          />
+          <button type="submit" disabled={!input.trim() || isSending}>
+            Send <ContinueIcon />
+          </button>
+        </form>
+      </section>
+    </main>
   );
 }
 
@@ -354,6 +536,16 @@ function ContactPage({ initialMessage, onBack }) {
 }
 
 function ServiceCard({ service, index, onProcess }) {
+  const opensChat = Boolean(service.webhook);
+  const actionContent = (
+    <>
+      <span>Process</span>
+      <span className="service-card__action-icon">
+        {opensChat ? <ContinueIcon /> : <DownloadIcon />}
+      </span>
+    </>
+  );
+
   return (
     <li
       className={`service-card service-card--${service.imageFit}`}
@@ -386,18 +578,26 @@ function ServiceCard({ service, index, onProcess }) {
           </div>
           <h3>{service.name}</h3>
 
-          <a
-            className="service-card__action"
-            href={service.profile}
-            download={service.downloadName}
-            onClick={() => onProcess?.(service)}
-            aria-label={`Download ${service.name} company profile`}
-          >
-            <span>Process</span>
-            <span className="service-card__action-icon">
-              <DownloadIcon />
-            </span>
-          </a>
+          {opensChat ? (
+            <button
+              type="button"
+              className="service-card__action"
+              onClick={() => onProcess?.(service)}
+              aria-label={`Open ${service.name} chat`}
+            >
+              {actionContent}
+            </button>
+          ) : (
+            <a
+              className="service-card__action"
+              href={service.profile}
+              download={service.downloadName}
+              onClick={() => onProcess?.(service)}
+              aria-label={`Download ${service.name} company profile`}
+            >
+              {actionContent}
+            </a>
+          )}
         </div>
       </article>
     </li>
@@ -414,11 +614,11 @@ function CommandPanel({ onProcess }) {
             <h2>Connected operations</h2>
           </div>
 
-          <div className="system-status" aria-label="Six services available">
+          <div className="system-status" aria-label="Nine services available">
             <span className="system-status__dot" aria-hidden="true" />
             <span>
               <small>Service status</small>
-              06 Available
+              09 Available
             </span>
           </div>
         </header>
@@ -445,6 +645,19 @@ function CommandPanel({ onProcess }) {
 
 export default function Gro4ceHero({ onProcess, initialContactRequest = null }) {
   const [contactRequest, setContactRequest] = useState(initialContactRequest);
+  const [activeService, setActiveService] = useState(null);
+
+  const handleProcess = (service) => {
+    if (service.webhook) {
+      setActiveService(service);
+    }
+
+    onProcess?.(service);
+  };
+
+  if (activeService) {
+    return <ServiceChatPage service={activeService} onBack={() => setActiveService(null)} />;
+  }
 
   if (contactRequest !== null) {
     return (
@@ -457,22 +670,8 @@ export default function Gro4ceHero({ onProcess, initialContactRequest = null }) 
 
   return (
     <main className="gro4ce-page">
-      <section className="gro4ce-hero" aria-labelledby="gro4ce-title">
-        <div className="hero-intro">
-          <header className="hero-brand-header">
-            <h1 id="gro4ce-title">
-              <BrandMark />
-            </h1>
-            <span className="hero-brand-header__accent" aria-hidden="true" />
-            <span className="hero-brand-header__signature" aria-hidden="true">
-              <span>Intelligence, connected</span>
-            </span>
-          </header>
-
-          <ContactPrompt onContinue={setContactRequest} />
-        </div>
-
-        <CommandPanel onProcess={onProcess} />
+      <section className="gro4ce-hero" aria-label="Gro4ce services">
+        <CommandPanel onProcess={handleProcess} />
 
         <div className="hero-coordinate hero-coordinate--left" aria-hidden="true">
           06°56′N / 79°51′E
