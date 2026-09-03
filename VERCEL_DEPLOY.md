@@ -3,9 +3,9 @@
 1. Import the GitHub repository into Vercel.
 2. Keep the detected framework as **Vite**.
 3. Add these Production and Preview environment variables in Vercel:
-   - `VITE_CARLOOP_WEBHOOK_URL`
-   - `VITE_CEYLON_KULUBADU_WEBHOOK_URL`
-   - `VITE_PERSONAL_BRANDING_WEBHOOK_URL`
+   - `VITE_CARLOOP_WEBHOOK`
+   - `VITE_CEYLON_WEBHOOK`
+   - `VITE_PERSONAL_BRANDING_WEBHOOK`
 4. Set each variable to its public **HTTPS** n8n production webhook URL.
 5. Deploy.
 

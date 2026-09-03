@@ -14,15 +14,15 @@ import legalPartnersProfile from "../assets/Lanka_Legal_Partners_Company_Profile
 import salonProfile from "../assets/Lanka_Glow_Salon_Company_Profile.docx.pdf";
 import "./Gro4ceHero.css";
 
-const serviceWebhooks = {
+const WEBHOOKS = {
   carloop:
-    import.meta.env.VITE_CARLOOP_WEBHOOK_URL ||
+    import.meta.env.VITE_CARLOOP_WEBHOOK ||
     "http://localhost:5678/webhook/carloop-chat",
   ceylonKulubadu:
-    import.meta.env.VITE_CEYLON_KULUBADU_WEBHOOK_URL ||
+    import.meta.env.VITE_CEYLON_WEBHOOK ||
     "http://localhost:5678/webhook/ceylon-chat",
   personalBranding:
-    import.meta.env.VITE_PERSONAL_BRANDING_WEBHOOK_URL ||
+    import.meta.env.VITE_PERSONAL_BRANDING_WEBHOOK ||
     "http://localhost:5678/webhook/personal-branding-chat-v6",
 };
 
@@ -106,7 +106,7 @@ const services = [
     imageHeight: 1536,
     imageFit: "cover",
     chat: true,
-    webhook: serviceWebhooks.carloop,
+    aiType: "carloop",
     welcomeMessage: "Welcome to Carloop. How can I help you today?",
   },
   {
@@ -118,7 +118,7 @@ const services = [
     imageHeight: 1024,
     imageFit: "cover",
     chat: true,
-    webhook: serviceWebhooks.ceylonKulubadu,
+    aiType: "ceylonKulubadu",
     welcomeMessage: "Welcome to Ceylon Kulubadu. How can I help you today?",
   },
   {
@@ -130,7 +130,7 @@ const services = [
     imageHeight: 1536,
     imageFit: "cover",
     chat: true,
-    webhook: serviceWebhooks.personalBranding,
+    aiType: "personalBranding",
     welcomeMessage: "Welcome to Personal Branding AI. How can I help you today?",
   },
 ];
@@ -256,6 +256,7 @@ function getWebhookReply(payload) {
   if (typeof data === "string") return data;
 
   return (
+    data?.reply ??
     data?.output ??
     data?.text ??
     data?.message ??
@@ -263,6 +264,41 @@ function getWebhookReply(payload) {
     data?.answer ??
     "Your request was received, but the assistant returned an empty response."
   );
+}
+
+async function sendToAI(type, message, sessionId) {
+  const webhookUrl = WEBHOOKS[type];
+
+  if (!webhookUrl) {
+    throw new Error(`Unknown AI type: ${type}`);
+  }
+
+  const response = await fetch(webhookUrl, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      channel: "website",
+      session_id: sessionId,
+      message,
+    }),
+  });
+
+  if (!response.ok) {
+    const text = await response.text();
+
+    console.error("Webhook error:", {
+      status: response.status,
+      body: text,
+    });
+
+    throw new Error(`Webhook failed: ${response.status}`);
+  }
+
+  const data = await response.json();
+
+  return getWebhookReply(data);
 }
 
 function ServiceChatPage({ service, onBack }) {
@@ -273,6 +309,7 @@ function ServiceChatPage({ service, onBack }) {
     { id: "welcome", role: "agent", text: service.welcomeMessage },
   ]);
   const [isSending, setIsSending] = useState(false);
+  const webhookUrl = WEBHOOKS[service.aiType];
   const sessionId = useRef(
     globalThis.crypto?.randomUUID?.() ?? `${service.id}-${Date.now()}`,
   );
@@ -302,39 +339,18 @@ function ServiceChatPage({ service, onBack }) {
     setIsSending(true);
 
     try {
-      if (!service.webhook) {
-        throw new Error("Production webhook URL is not configured.");
-      }
-
-      const response = await fetch(service.webhook, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          action: "sendMessage",
-          sessionId: sessionId.current,
-          chatInput,
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error(`Webhook returned ${response.status}`);
-      }
-
-      const contentType = response.headers.get("content-type") ?? "";
-      const payload = contentType.includes("application/json")
-        ? await response.json()
-        : await response.text();
+      const reply = await sendToAI(service.aiType, chatInput, sessionId.current);
 
       setMessages((current) => [
         ...current,
         {
           id: `${Date.now()}-agent`,
           role: "agent",
-          text: getWebhookReply(payload),
+          text: reply,
         },
       ]);
     } catch (error) {
-      const errorMessage = service.webhook
+      const errorMessage = webhookUrl
         ? `I couldn't reach the ${service.name} assistant. Please check that its workflow is active and try again.`
         : `${service.name} chat is not configured for this deployment yet.`;
 
@@ -365,7 +381,7 @@ function ServiceChatPage({ service, onBack }) {
           <BrandMark />
         </span>
         <span className="contact-page__secure">
-          <i aria-hidden="true" /> {service.webhook ? "Connected" : "Setup required"}
+          <i aria-hidden="true" /> {webhookUrl ? "Connected" : "Setup required"}
         </span>
       </nav>
 
@@ -381,7 +397,7 @@ function ServiceChatPage({ service, onBack }) {
             </span>
           </div>
           <div className="conversation-panel__status">
-            <i aria-hidden="true" /> {service.webhook ? "Online" : "Configuration required"}
+            <i aria-hidden="true" /> {webhookUrl ? "Online" : "Configuration required"}
           </div>
         </header>
 
