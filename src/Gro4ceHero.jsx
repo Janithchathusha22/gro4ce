@@ -14,6 +14,18 @@ import legalPartnersProfile from "../assets/Lanka_Legal_Partners_Company_Profile
 import salonProfile from "../assets/Lanka_Glow_Salon_Company_Profile.docx.pdf";
 import "./Gro4ceHero.css";
 
+const localWebhook = (path) =>
+  import.meta.env.DEV ? `http://localhost:5678/webhook/${path}` : "";
+
+const serviceWebhooks = {
+  carloop: import.meta.env.VITE_CARLOOP_WEBHOOK_URL || localWebhook("carloop-chat"),
+  ceylonKulubadu:
+    import.meta.env.VITE_CEYLON_KULUBADU_WEBHOOK_URL || localWebhook("ceylon-chat"),
+  personalBranding:
+    import.meta.env.VITE_PERSONAL_BRANDING_WEBHOOK_URL ||
+    localWebhook("personal-branding-chat-v6"),
+};
+
 const primaryServices = [
   {
     id: "lanka-legal-partners",
@@ -93,7 +105,8 @@ const services = [
     imageWidth: 2752,
     imageHeight: 1536,
     imageFit: "cover",
-    webhook: "http://localhost:5678/webhook/carloop-chat",
+    chat: true,
+    webhook: serviceWebhooks.carloop,
     welcomeMessage: "Welcome to Carloop. How can I help you today?",
   },
   {
@@ -104,7 +117,8 @@ const services = [
     imageWidth: 1536,
     imageHeight: 1024,
     imageFit: "cover",
-    webhook: "http://localhost:5678/webhook/ceylon-chat",
+    chat: true,
+    webhook: serviceWebhooks.ceylonKulubadu,
     welcomeMessage: "Welcome to Ceylon Kulubadu. How can I help you today?",
   },
   {
@@ -115,7 +129,8 @@ const services = [
     imageWidth: 2752,
     imageHeight: 1536,
     imageFit: "cover",
-    webhook: "http://localhost:5678/webhook/personal-branding-chat-v6",
+    chat: true,
+    webhook: serviceWebhooks.personalBranding,
     welcomeMessage: "Welcome to Personal Branding AI. How can I help you today?",
   },
 ];
@@ -287,6 +302,10 @@ function ServiceChatPage({ service, onBack }) {
     setIsSending(true);
 
     try {
+      if (!service.webhook) {
+        throw new Error("Production webhook URL is not configured.");
+      }
+
       const response = await fetch(service.webhook, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -315,12 +334,16 @@ function ServiceChatPage({ service, onBack }) {
         },
       ]);
     } catch (error) {
+      const errorMessage = service.webhook
+        ? `I couldn't reach the ${service.name} assistant. Please check that its workflow is active and try again.`
+        : `${service.name} chat is not configured for this deployment yet.`;
+
       setMessages((current) => [
         ...current,
         {
           id: `${Date.now()}-error`,
           role: "agent",
-          text: `I couldn't reach the ${service.name} assistant. Please check that its workflow is active and try again.`,
+          text: errorMessage,
           error: true,
         },
       ]);
@@ -342,7 +365,7 @@ function ServiceChatPage({ service, onBack }) {
           <BrandMark />
         </span>
         <span className="contact-page__secure">
-          <i aria-hidden="true" /> Connected
+          <i aria-hidden="true" /> {service.webhook ? "Connected" : "Setup required"}
         </span>
       </nav>
 
@@ -358,7 +381,7 @@ function ServiceChatPage({ service, onBack }) {
             </span>
           </div>
           <div className="conversation-panel__status">
-            <i aria-hidden="true" /> Online
+            <i aria-hidden="true" /> {service.webhook ? "Online" : "Configuration required"}
           </div>
         </header>
 
@@ -536,7 +559,7 @@ function ContactPage({ initialMessage, onBack }) {
 }
 
 function ServiceCard({ service, index, onProcess }) {
-  const opensChat = Boolean(service.webhook);
+  const opensChat = Boolean(service.chat);
   const actionContent = (
     <>
       <span>Process</span>
@@ -648,7 +671,7 @@ export default function Gro4ceHero({ onProcess, initialContactRequest = null }) 
   const [activeService, setActiveService] = useState(null);
 
   const handleProcess = (service) => {
-    if (service.webhook) {
+    if (service.chat) {
       setActiveService(service);
     }
 
