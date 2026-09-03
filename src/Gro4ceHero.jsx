@@ -14,16 +14,16 @@ import legalPartnersProfile from "../assets/Lanka_Legal_Partners_Company_Profile
 import salonProfile from "../assets/Lanka_Glow_Salon_Company_Profile.docx.pdf";
 import "./Gro4ceHero.css";
 
-const localWebhook = (path) =>
-  import.meta.env.DEV ? `http://localhost:5678/webhook/${path}` : "";
-
 const serviceWebhooks = {
-  carloop: import.meta.env.VITE_CARLOOP_WEBHOOK_URL || localWebhook("carloop-chat"),
+  carloop:
+    import.meta.env.VITE_CARLOOP_WEBHOOK_URL ||
+    "http://localhost:5678/webhook/carloop-chat",
   ceylonKulubadu:
-    import.meta.env.VITE_CEYLON_KULUBADU_WEBHOOK_URL || localWebhook("ceylon-chat"),
+    import.meta.env.VITE_CEYLON_KULUBADU_WEBHOOK_URL ||
+    "http://localhost:5678/webhook/ceylon-chat",
   personalBranding:
     import.meta.env.VITE_PERSONAL_BRANDING_WEBHOOK_URL ||
-    localWebhook("personal-branding-chat-v6"),
+    "http://localhost:5678/webhook/personal-branding-chat-v6",
 };
 
 const primaryServices = [
