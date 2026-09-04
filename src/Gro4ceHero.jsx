@@ -141,16 +141,6 @@ const particles = [
   { x: "92%", y: "38%", size: "2px", delay: "-1s", duration: "13s" },
 ];
 
-function BrandMark() {
-  return (
-    <span className="gro4ce-brand" aria-label="Gro4ce">
-      <strong className="gro4ce-brand__lead" aria-hidden="true">Gro</strong>
-      <span className="gro4ce-brand__four" aria-hidden="true">4</span>
-      <strong className="gro4ce-brand__trail" aria-hidden="true">ce</strong>
-    </span>
-  );
-}
-
 function BackgroundEffects() {
   return (
     <div className="hero-atmosphere" aria-hidden="true">
@@ -319,7 +309,6 @@ function ServiceDetailPage({ service, onBack }) {
         <button type="button" onClick={onBack} className="contact-page__back">
           <span aria-hidden="true">←</span> Back to services
         </button>
-        <span className="contact-page__brand"><BrandMark /></span>
         <span className="contact-page__secure">
           <i aria-hidden="true" /> Service profile
         </span>
@@ -532,7 +521,7 @@ export default function Gro4ceHero({ onProcess }) {
 
   return (
     <main className="gro4ce-page">
-      <section className="gro4ce-hero" aria-label="Gro4ce services">
+      <section className="gro4ce-hero" aria-label="AI services">
         <CommandPanel onSelect={openService} />
         <div className="hero-coordinate hero-coordinate--left" aria-hidden="true">
           06°56′N / 79°51′E
