@@ -1,0 +1,127 @@
+{
+  "checkedAt": "2026-09-25T17:07:26.767Z",
+  "origin": "https://gro4ce.vercel.app",
+  "results": [
+    {
+      "name": "VITE_CARLOOP_WEBHOOK",
+      "url": "https://vmi3604779.contaboserver.net/webhook/carloop-chat",
+      "preflightStatus": 204,
+      "preflightPassed": true,
+      "status": 200,
+      "reply": "I found two fuel-efficient automatic cars under LKR 8,000,000:\n\n1. Suzuki Wagon R (Hybrid)\n   Year: 2018\n   Price: LKR 4,650,000\n   Showroom: Colombo\n   Status: Available\n\n2. Toyota RAV4 (Petrol)\n   Year: 2022\n   Price: LKR 7,810,000\n   Showroom: Kandy\n   Status: Available\n\nPlease let me know if you want more details about any of these vehicles.",
+      "limited": false,
+      "postCorsPassed": true,
+      "passed": true,
+      "seconds": 7.96
+    },
+    {
+      "name": "VITE_LANKA_ELECTRO_MART_WEBHOOK",
+      "url": "https://vmi3604779.contaboserver.net/webhook/lanka-electro-mart/chat",
+      "preflightStatus": 204,
+      "preflightPassed": true,
+      "status": 200,
+      "reply": "I found a Smart TV that fits your budget:\n\n1. **Smart TV 43 Demo**\n   - Brand: Samsung\n   - Size: 43 inch\n   - Resolution: 4K\n   - Price: LKR 112,000\n   - Warranty: 24 months\n   - Stock Availability:\n     - Colombo: 7 units\n     - Galle: 3 units\n     - Jaffna: 2 units\n\nWould you like more information about this Smart TV, or are you interested in exploring more options?",
+      "limited": false,
+      "postCorsPassed": true,
+      "passed": true,
+      "seconds": 8.45
+    },
+    {
+      "name": "VITE_AI_ACADEMY_WEBHOOK",
+      "url": "https://vmi3604779.contaboserver.net/webhook/academy/chat",
+      "preflightStatus": 204,
+      "preflightPassed": true,
+      "status": 200,
+      "reply": "I have found some Accounting tutors available in Colombo. Here are the options along with their fees and details:\n\n1. Tutor: Mr. Sutharsan Chandrasekaram\n   - Designation: Senior Tutor\n   - Qualification: Degree Holder\n   - Teaching Format: Physical and Online\n   - Medium: Sinhala, English\n   - Teaching Style: Self-taught subject specialist; simplifies difficult topics\n   - Experience: 16 years\n   - Physical Fee: LKR 3600\n   - Online Fee: LKR 2200\n\n2. Tutor: Ms. Priya Sivalingam\n   - Designation: Tutor\n   - Qualification: Degree Holder\n   - Teaching Format: Physical and Online\n   - Medium: Sinhala\n   - Teaching Style: Structured, syllabus-first teaching with model-paper practice\n   - Experience: 4 years\n   - Physical Fee: LKR 11700\n   - Online Fee: LKR 2250\n\n3. Tutor: Mrs. Erandi Perera\n   - Designation: Junior Tutor\n   - Qualification: Degree Holder\n   - Teaching Format: Physical and Online\n   - Medium: Sinhala\n   - Teaching Style: Interactive, question-driven\n   - Experience: 1 year\n   - Physical Fee: LKR 2800\n   - Online Fee: LKR 1800\n\nThese are the tutors available for Accounting classes in Colombo. Let me know if you would like more information or if you have a preference.",
+      "limited": false,
+      "postCorsPassed": true,
+      "passed": true,
+      "seconds": 12.1
+    },
+    {
+      "name": "VITE_LANKA_GLOW_WEBHOOK",
+      "url": "https://vmi3604779.contaboserver.net/webhook/lanka-glow-chat",
+      "preflightStatus": 204,
+      "preflightPassed": true,
+      "status": 200,
+      "reply": "In Colombo, for Global Hair Colouring services at Lanka Glow Salon, the price range is LKR 7,450 to LKR 18,900. Please note that the exact price can vary based on hair length, products used, and stylist seniority.",
+      "limited": false,
+      "postCorsPassed": true,
+      "passed": true,
+      "seconds": 6.43
+    },
+    {
+      "name": "VITE_CEYLON_WEBHOOK",
+      "url": "https://vmi3604779.contaboserver.net/webhook/ceylon-chat",
+      "preflightStatus": 204,
+      "preflightPassed": true,
+      "status": 200,
+      "reply": "Ceylon Cinnamon has multiple grades/forms. Could you please specify which grade or form you want? For example, Quills Alba Grade, Quills C5 Special, Cinnamon Chips, or Ground Powder?",
+      "limited": false,
+      "postCorsPassed": true,
+      "passed": true,
+      "seconds": 6.68
+    },
+    {
+      "name": "VITE_LANKA_LEGAL_WEBHOOK",
+      "url": "https://vmi3604779.contaboserver.net/webhook/legal/chat",
+      "preflightStatus": 204,
+      "preflightPassed": true,
+      "status": 200,
+      "reply": "I found 5 lawyers for your property boundary dispute in Colombo. Here are the top three:\n\n1. Imran Lafir (LLP-198), Legal Trainee, Colombo (Head Office), Fee: LKR 1600\n2. Munira Uwais (LLP-006), Senior Partner, Galle, Fee: LKR 23600\n3. Naflah Careemjee (LLP-030), Partner, Jaffna, Fee: LKR 16500\n\nWould you like to know the availability of any of these lawyers or need more details?",
+      "limited": false,
+      "postCorsPassed": true,
+      "passed": true,
+      "seconds": 10.05
+    },
+    {
+      "name": "VITE_MERIDIAN_FINANCE_WEBHOOK",
+      "url": "https://vmi3604779.contaboserver.net/webhook/c6d586f8-103f-4ccd-8e95-705f7f49a6e0/chat",
+      "preflightStatus": 204,
+      "preflightPassed": true,
+      "status": 200,
+      "reply": "For a flat-rate lease of LKR 1,000,000 at an annual rate of 15%, the estimated monthly installment for 24 months would be LKR 54,166.67. The total interest payable would be LKR 300,000, making the total amount payable LKR 1,300,000. This estimate excludes fees and insurance.",
+      "limited": false,
+      "postCorsPassed": true,
+      "passed": true,
+      "calculatorPassed": true,
+      "seconds": 3.6
+    },
+    {
+      "name": "VITE_SENTINEL_INSURANCE_WEBHOOK",
+      "url": "https://vmi3604779.contaboserver.net/webhook/53e126fa-59a8-422a-a8c4-f674091f848e/chat",
+      "preflightStatus": 204,
+      "preflightPassed": true,
+      "status": 200,
+      "reply": "**Comprehensive Motor Insurance** provides the following coverage:\n- Accidental loss/damage to own vehicle\n- Third-party bodily injury/property damage\n- Theft\n- Natural disasters\n\nExclusions include:\n- Driving under the influence\n- Unlicensed driving\n\nClaims for Comprehensive Motor Insurance can be handled through **motor-claims@sentinelinsurance.lk**.",
+      "limited": false,
+      "postCorsPassed": true,
+      "passed": true,
+      "seconds": 5.88
+    },
+    {
+      "name": "VITE_TEEN_MASTER_OF_BUSINESS_WEBHOOK",
+      "url": "https://tachatbotapi.teenacademy.lk/webhook/teen-academy-chat",
+      "preflightStatus": 204,
+      "preflightPassed": true,
+      "status": 200,
+      "reply": "The Teen Master of Business Programme aims to teach a 15-year-old student various essential business skills and concepts. Here are some key aspects of what a 15-year-old student can learn from the programme:\n\n- Your child will learn about the entrepreneurial mindset, opportunity recognition, creative thinking, and developing a growth mindset.\n- They will understand markets, target customers, perform market research, and build customer personas.\n- The programme covers building a business model, financial aspects such as understanding business numbers, marketing strategies, branding, and sustainable business practices.\n- Students will also gain leadership skills, learn about digital business tools, AI for business, ethics, sustainable business practices, and hone communication and negotiation skills.\n- The curriculum includes practical activities, case studies, real-world examples, and a capstone project where students launch and manage a real micro-enterprise.\n\nThe programme is designed to provide practical exposure and learning experiences for young entrepreneurs, helping them develop crucial business acumen and skills in a supportive educational environment.",
+      "limited": false,
+      "postCorsPassed": true,
+      "passed": true,
+      "seconds": 8.3
+    },
+    {
+      "name": "VITE_PERSONAL_BRANDING_WEBHOOK",
+      "url": "https://vmi3604779.contaboserver.net/webhook/personal-branding-chat-v6",
+      "preflightStatus": 204,
+      "preflightPassed": true,
+      "status": 200,
+      "reply": "Senela can offer a customized leadership workshop focusing on developing key leadership skills such as communication, decision-making, and team management. This workshop can be tailored to the specific needs and goals of the organization, helping to enhance leadership capability and drive organizational success.",
+      "limited": false,
+      "postCorsPassed": true,
+      "passed": true,
+      "seconds": 5.83
+    }
+  ]
+}

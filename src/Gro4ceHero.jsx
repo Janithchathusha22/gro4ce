@@ -12,15 +12,36 @@ import image11 from "../assets/11.jpg";
 import "./Gro4ceHero.css";
 
 const WEBHOOKS = {
+  lankaElectroMart:
+    import.meta.env.VITE_LANKA_ELECTRO_MART_WEBHOOK ||
+    "https://vmi3604779.contaboserver.net/webhook/lanka-electro-mart/chat",
+  aiAcademy:
+    import.meta.env.VITE_AI_ACADEMY_WEBHOOK ||
+    "https://vmi3604779.contaboserver.net/webhook/academy/chat",
   carloop:
     import.meta.env.VITE_CARLOOP_WEBHOOK ||
-    "http://localhost:5678/webhook/carloop-chat",
+    "https://vmi3604779.contaboserver.net/webhook/carloop-chat",
   ceylonKulubadu:
     import.meta.env.VITE_CEYLON_WEBHOOK ||
-    "http://localhost:5678/webhook/ceylon-chat",
+    "https://vmi3604779.contaboserver.net/webhook/ceylon-chat",
+  lankaGlow:
+    import.meta.env.VITE_LANKA_GLOW_WEBHOOK ||
+    "https://vmi3604779.contaboserver.net/webhook/lanka-glow-chat",
+  lankaLegal:
+    import.meta.env.VITE_LANKA_LEGAL_WEBHOOK ||
+    "https://vmi3604779.contaboserver.net/webhook/legal/chat",
+  meridianFinance:
+    import.meta.env.VITE_MERIDIAN_FINANCE_WEBHOOK ||
+    "https://vmi3604779.contaboserver.net/webhook/c6d586f8-103f-4ccd-8e95-705f7f49a6e0/chat",
+  sentinelInsurance:
+    import.meta.env.VITE_SENTINEL_INSURANCE_WEBHOOK ||
+    "https://vmi3604779.contaboserver.net/webhook/53e126fa-59a8-422a-a8c4-f674091f848e/chat",
+  teenMasterOfBusiness:
+    import.meta.env.VITE_TEEN_MASTER_OF_BUSINESS_WEBHOOK ||
+    "https://tachatbotapi.teenacademy.lk/webhook/teen-academy-chat",
   personalBranding:
     import.meta.env.VITE_PERSONAL_BRANDING_WEBHOOK ||
-    "http://localhost:5678/webhook/personal-branding-chat-v6",
+    "https://vmi3604779.contaboserver.net/webhook/personal-branding-chat-v6",
 };
 
 const services = [
@@ -33,6 +54,8 @@ const services = [
     summary: "Find the right electronics, compare models, check pricing, and locate nearby stock.",
     description: `Lanka Electro Mart is an electronics retail business offering a wide range of electrical and electronic items, from home appliances and televisions to mobile phones, kitchen equipment, and everyday gadgets. Instead of browsing an entire catalogue yourself, describe what you need to the AI agent. It can recommend suitable options for your requirement and budget, explain model differences, provide current pricing, identify the nearest branch with stock, and help prepare formal quotations for comparisons or bulk orders.`,
     capabilities: ["Product recommendations", "Model and price comparisons", "Branch stock checks", "Formal quotations"],
+    aiType: "lankaElectroMart",
+    welcomeMessage: "Welcome to Lanka Electro Mart. What product can I help you find today?",
   },
   {
     id: "ai-academy-sl",
@@ -43,6 +66,8 @@ const services = [
     summary: "Match A/L students with the right tutor, class format, schedule, and location.",
     description: `AI Academy SL is an island-wide Advanced Level tuition institute covering Science, Commerce, Arts, and Technology streams through branches in 56 main towns across Sri Lanka. The AI agent can find tutors by subject, location, class format, and preferred tutor profile, then explain their qualifications, experience, teaching style, schedules, and monthly fees. It can also clarify whether a class is physical, online, or hybrid and guide students through registration and weekly availability.`,
     capabilities: ["Tutor matching", "Schedules and monthly fees", "Online or physical class guidance", "Registration support"],
+    aiType: "aiAcademy",
+    welcomeMessage: "Welcome to AI Academy SL. Which subject, tutor, or class are you looking for?",
   },
   {
     id: "carloop",
@@ -77,6 +102,8 @@ const services = [
     summary: "Explore treatments, compare branch pricing, find specialists, and plan appointments.",
     description: `Lanka Glow Salon is a unisex hair and beauty salon chain operating across Sri Lanka's main cities. Its services include haircuts, colouring, hair treatments, bridal makeup, nail care, facials, eyelash and brow services, and spa treatments for adults and children. The AI agent can explain available services, provide indicative pricing, match customers with specialist stylists, compare standard, premium, and flagship locations, and guide appointment booking.`,
     capabilities: ["Service discovery", "Indicative treatment pricing", "Stylist matching", "Branch and appointment guidance"],
+    aiType: "lankaGlow",
+    welcomeMessage: "Welcome to Lanka Glow Salon. Which service or appointment can I help you with?",
   },
   {
     id: "lanka-legal-partners",
@@ -87,6 +114,8 @@ const services = [
     summary: "Describe your legal matter and find the right lawyer, expertise, and consultation path.",
     description: `Lanka Legal Partners is a full-service law firm with more than one hundred lawyers practising across Sri Lanka. It covers corporate and commercial law, criminal defence, family law, property disputes, labour matters, and more. The AI agent can interpret a client's situation, match it with an appropriate lawyer by expertise, court experience, and seniority, explain qualifications and availability, and guide the client through consultation scheduling and fees.`,
     capabilities: ["Legal matter triage", "Lawyer matching", "Qualifications and availability", "Consultation scheduling"],
+    aiType: "lankaLegal",
+    welcomeMessage: "Welcome to Lanka Legal Partners. Briefly describe the legal support you need.",
   },
   {
     id: "meridian-finance",
@@ -97,6 +126,8 @@ const services = [
     summary: "Compare finance products, understand rates and documents, and estimate repayments.",
     description: `Meridian Finance PLC is a licensed leasing and finance company offering vehicle leasing, hire purchase, personal and business loans, gold loans, home mortgages, fixed deposits, and savings accounts through branches across Sri Lanka. Its AI agent can explain relevant products, interest rates, tenure, down payments, processing fees, and application documents, estimate monthly instalments, compare leasing with hire purchase, and direct customers to an appropriate branch.`,
     capabilities: ["Product comparison", "Rates, tenure, and fee guidance", "Instalment estimates", "Application and branch support"],
+    aiType: "meridianFinance",
+    welcomeMessage: "Welcome to Meridian Finance. Which finance product can I help you explore?",
   },
   {
     id: "sentinel-insurance",
@@ -107,6 +138,8 @@ const services = [
     summary: "Understand cover, exclusions, premiums, claims, and the policy that fits your needs.",
     description: `Sentinel Insurance PLC provides life and general insurance, including term and whole-life cover, health and medical insurance, motor insurance, home and business property cover, travel insurance, and specialised policies for businesses and farmers. The AI agent can recommend suitable cover, explain inclusions and exclusions, outline indicative premiums and coverage, direct customers to the correct claims desk, and identify the best branch for further support.`,
     capabilities: ["Policy recommendations", "Cover and exclusion explanations", "Premium guidance", "Claims and branch direction"],
+    aiType: "sentinelInsurance",
+    welcomeMessage: "Welcome to Sentinel Insurance. What would you like to insure or claim for?",
   },
   {
     id: "teen-master-of-business",
@@ -117,6 +150,8 @@ const services = [
     summary: "A practical, year-long business programme for students aged 13–18.",
     description: `Teen Master of Business is Sri Lanka's first school-embedded, credit-bearing business education programme built for secondary school students aged 13–18. Across a structured year based on Learn It, Apply It, and Live It, students complete 12 modules spanning entrepreneurship, market research, business models, financial literacy, marketing, leadership, digital business and AI, ethics, pitching, design thinking, and business law before launching a real micro-enterprise and pitching to business judges.`,
     capabilities: ["Twelve practical business modules", "Project-based learning", "Live micro-enterprise capstone", "Student and school enrolment guidance"],
+    aiType: "teenMasterOfBusiness",
+    welcomeMessage: "Welcome to Teen Master of Business. How can I help with the programme or enrolment?",
   },
   {
     id: "personal-branding-ai",
@@ -226,6 +261,7 @@ async function sendToAI(type, message, sessionId) {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ channel: "website", session_id: sessionId, message }),
+    signal: AbortSignal.timeout(120000),
   });
 
   if (!response.ok) {
@@ -234,7 +270,12 @@ async function sendToAI(type, message, sessionId) {
     throw new Error(`Webhook failed: ${response.status}`);
   }
 
-  return getWebhookReply(await response.json());
+  const payload = await response.json();
+  const data = Array.isArray(payload) ? payload[0] : payload;
+  if (data?.success === false) throw new Error("Assistant could not complete the request");
+  const reply = getWebhookReply(payload);
+  if (typeof reply !== "string" || !reply.trim()) throw new Error("Invalid assistant reply");
+  return { reply, limited: data?.degraded === true || data?.service_status === "limited" };
 }
 
 function ServiceDetailPage({ service, onBack }) {
@@ -254,6 +295,7 @@ function ServiceDetailPage({ service, onBack }) {
     },
   ]);
   const [isSending, setIsSending] = useState(false);
+  const [availability, setAvailability] = useState("Ready");
   const sessionId = useRef(
     globalThis.crypto?.randomUUID?.() ?? `${service.id}-${Date.now()}`,
   );
@@ -280,18 +322,20 @@ function ServiceDetailPage({ service, onBack }) {
     setIsSending(true);
 
     try {
-      const reply = await sendToAI(service.aiType, chatInput, sessionId.current);
+      const { reply, limited } = await sendToAI(service.aiType, chatInput, sessionId.current);
+      setAvailability(limited ? "Limited support" : "Online");
       setMessages((current) => [
         ...current,
         { id: `${Date.now()}-agent`, role: "agent", text: reply },
       ]);
     } catch (error) {
+      setAvailability("Temporarily unavailable");
       setMessages((current) => [
         ...current,
         {
           id: `${Date.now()}-error`,
           role: "agent",
-          text: `I couldn't reach the ${service.name} assistant. Check that its n8n workflow is published and try again.`,
+          text: `The ${service.name} assistant couldn't complete your request. Please try again shortly.`,
           error: true,
         },
       ]);
@@ -360,8 +404,8 @@ function ServiceDetailPage({ service, onBack }) {
               <h2 id="service-chat-title">AI Assistant</h2>
             </span>
           </div>
-          <div className={`conversation-panel__status${isConnected ? "" : " is-pending"}`}>
-            <i aria-hidden="true" /> {isConnected ? "Online" : "Ready for n8n"}
+          <div className={`conversation-panel__status${!isConnected || availability === "Limited support" || availability === "Temporarily unavailable" ? " is-pending" : ""}`}>
+            <i aria-hidden="true" /> {isConnected ? availability : "Ready for n8n"}
           </div>
         </header>
 
