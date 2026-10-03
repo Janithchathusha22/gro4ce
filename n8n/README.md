@@ -1,5 +1,36 @@
 # Production workflow repairs — 2026-09-25
 
+## Lanka Electro Mart website prompt — 2026-10-03
+
+`lanka-electro-mart-system-prompt.txt` contains the supplied v1.0 Lanka Electro Mart
+system prompt plus the Gro4ce website-channel addendum. This repository does not
+contain a Lanka Electro Mart n8n workflow export, and no authenticated n8n editor
+access was available for this change. Paste the full file into the correct Lanka
+Electro Mart AI Agent system-prompt field, save it, activate the workflow, and run
+the acceptance checks before treating it as deployed.
+
+The website now sends these fields only to the selected service webhook:
+`channel`, `session_id`, `message`, `visitor_name`, `visitor_email`, and
+`update_consent`. Map them explicitly in n8n and keep memory, lead storage, and
+tools scoped to the Lanka Electro Mart business identity. The public webhook must
+not accept a client-provided business ID as authority to select another business.
+
+Production stock and restock claims still require verified connections:
+
+- Current approved product records for SKU, details, and prices.
+- A branch-level `check_availability` tool; catalogue branch names and aggregate
+  quantities are not sufficient.
+- A real `upsert_lead` (or mapped equivalent) storing SKU, preferred branch/town,
+  email, consent, and consent evidence.
+- An active stock-change trigger and email-sending workflow before promising or
+  confirming stock-update email delivery.
+- A real `handoff_to_human` tool before offering to ask the team, with success
+  checked before claiming the request was passed on.
+
+Keep OpenAI and email-provider credentials in n8n Credentials or protected
+server-side environment variables. Never expose them through React, `VITE_`
+variables, GitHub, webhook responses, or browser storage.
+
 The live n8n workflows were updated through the authenticated editor API. Existing
 workflow IDs and public webhook URLs were preserved; no secrets were added to this
 repository. Encrypted pre-change snapshots are retained in the operator's Windows

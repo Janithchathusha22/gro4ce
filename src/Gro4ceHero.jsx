@@ -9,6 +9,14 @@ import image07 from "../assets/7.jpg";
 import image08 from "../assets/8.jpg";
 import image09 from "../assets/9.jpg";
 import image11 from "../assets/11.jpg";
+import {
+  clearVisitorProfile,
+  createPersonalizedWelcome,
+  createWebhookRequest,
+  loadVisitorProfile,
+  saveVisitorProfile,
+  validateProfile,
+} from "./chatProfile";
 import "./Gro4ceHero.css";
 
 const WEBHOOKS = {
@@ -252,15 +260,16 @@ function getWebhookReply(payload) {
   );
 }
 
-async function sendToAI(type, message, sessionId) {
-  const webhookUrl = WEBHOOKS[type];
+async function sendToAI(type, message, sessionId, profile, updateConsent) {
+  const request = createWebhookRequest(WEBHOOKS, type, {
+    message,
+    sessionId,
+    profile,
+    updateConsent,
+  });
 
-  if (!webhookUrl) throw new Error(`Unknown AI type: ${type}`);
-
-  const response = await fetch(webhookUrl, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ channel: "website", session_id: sessionId, message }),
+  const response = await fetch(request.url, {
+    ...request.options,
     signal: AbortSignal.timeout(120000),
   });
 
@@ -278,10 +287,204 @@ async function sendToAI(type, message, sessionId) {
   return { reply, limited: data?.degraded === true || data?.service_status === "limited" };
 }
 
+function VisitorProfileModal({
+  service,
+  savedProfile,
+  initialConsent,
+  mode,
+  onCancel,
+  onClear,
+  onSubmit,
+}) {
+  const dialogRef = useRef(null);
+  const nameRef = useRef(null);
+  const emailRef = useRef(null);
+  const [form, setForm] = useState(savedProfile ?? { name: "", email: "" });
+  const [consent, setConsent] = useState(Boolean(initialConsent));
+  const [errors, setErrors] = useState({});
+
+  useEffect(() => {
+    setForm(savedProfile ?? { name: "", email: "" });
+    setConsent(Boolean(initialConsent));
+    setErrors({});
+  }, [savedProfile, initialConsent]);
+
+  useEffect(() => {
+    const previouslyFocused = document.activeElement;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    nameRef.current?.focus();
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      previouslyFocused?.focus?.();
+    };
+  }, []);
+
+  const handleChange = (field) => (event) => {
+    const value = event.target.value;
+    setForm((current) => ({ ...current, [field]: value }));
+    setErrors((current) => ({ ...current, [field]: undefined }));
+  };
+
+  const handleBlur = (field) => {
+    const result = validateProfile(form);
+    setErrors((current) => ({ ...current, [field]: result.errors[field] }));
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    const result = validateProfile(form);
+
+    if (!result.isValid) {
+      setErrors(result.errors);
+      (result.errors.name ? nameRef : emailRef).current?.focus();
+      return;
+    }
+
+    onSubmit(result.profile, consent);
+  };
+
+  const handleKeyDown = (event) => {
+    if (event.key === "Escape") {
+      event.preventDefault();
+      onCancel();
+      return;
+    }
+
+    if (event.key !== "Tab") return;
+    const focusable = dialogRef.current?.querySelectorAll(
+      'button:not([disabled]), input:not([disabled]), [href], [tabindex]:not([tabindex="-1"])',
+    );
+    if (!focusable?.length) return;
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first.focus();
+    }
+  };
+
+  return (
+    <div
+      className="profile-modal-backdrop"
+      onMouseDown={(event) => event.target === event.currentTarget && onCancel()}
+    >
+      <section
+        ref={dialogRef}
+        className="profile-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="profile-modal-title"
+        aria-describedby="profile-modal-description"
+        onKeyDown={handleKeyDown}
+        style={{ "--service-accent": service.accent }}
+      >
+        <button type="button" className="profile-modal__close" onClick={onCancel} aria-label="Close">
+          <span aria-hidden="true">×</span>
+        </button>
+
+        <div className="profile-modal__heading">
+          <span className="profile-modal__eyebrow">
+            <i aria-hidden="true" /> {mode === "edit" ? "Your chat profile" : "Before we begin"}
+          </span>
+          <h2 id="profile-modal-title">
+            {mode === "edit" ? "Update your details" : `Welcome to ${service.name}`}
+          </h2>
+          <p id="profile-modal-description">
+            Your name helps the assistant make the conversation more personal. These details are sent only
+            to {service.name}, the service you selected.
+          </p>
+        </div>
+
+        <form className="profile-form" onSubmit={handleSubmit} noValidate>
+          <div className="profile-form__field">
+            <label htmlFor="visitor-name">Name</label>
+            <input
+              ref={nameRef}
+              id="visitor-name"
+              name="name"
+              value={form.name}
+              onChange={handleChange("name")}
+              onBlur={() => handleBlur("name")}
+              autoComplete="name"
+              maxLength="80"
+              placeholder="Your name"
+              aria-invalid={Boolean(errors.name)}
+              aria-describedby={errors.name ? "visitor-name-error" : undefined}
+            />
+            {errors.name && <span id="visitor-name-error" className="profile-form__error">{errors.name}</span>}
+          </div>
+
+          <div className="profile-form__field">
+            <label htmlFor="visitor-email">Email address</label>
+            <input
+              ref={emailRef}
+              id="visitor-email"
+              name="email"
+              type="email"
+              inputMode="email"
+              value={form.email}
+              onChange={handleChange("email")}
+              onBlur={() => handleBlur("email")}
+              autoComplete="email"
+              maxLength="254"
+              placeholder="you@example.com"
+              aria-invalid={Boolean(errors.email)}
+              aria-describedby={errors.email ? "visitor-email-error" : undefined}
+            />
+            {errors.email && <span id="visitor-email-error" className="profile-form__error">{errors.email}</span>}
+          </div>
+
+          <label className="profile-form__consent" htmlFor="visitor-update-consent">
+            <input
+              id="visitor-update-consent"
+              type="checkbox"
+              checked={consent}
+              onChange={(event) => setConsent(event.target.checked)}
+            />
+            <span aria-hidden="true" />
+            <span>
+              <strong>Email product updates (optional)</strong>
+              Allow email updates only for a product I specifically ask to be notified about in this chat.
+            </span>
+          </label>
+
+          <div className="profile-form__privacy">
+            <svg viewBox="0 0 20 20" aria-hidden="true">
+              <rect x="4.5" y="8.5" width="11" height="8" rx="2" />
+              <path d="M7 8.5V6a3 3 0 0 1 6 0v2.5" />
+            </svg>
+            <p>Your profile is remembered only on this device. You can edit or clear it at any time.</p>
+          </div>
+
+          <div className="profile-form__actions">
+            {savedProfile && (
+              <button type="button" className="profile-form__clear" onClick={onClear}>
+                Clear saved profile
+              </button>
+            )}
+            <span />
+            <button type="button" className="profile-form__cancel" onClick={onCancel}>Cancel</button>
+            <button type="submit" className="profile-form__submit">
+              {mode === "edit" ? "Save changes" : "Continue to chat"} <ArrowIcon />
+            </button>
+          </div>
+        </form>
+      </section>
+    </div>
+  );
+}
+
 function ServiceDetailPage({ service, onBack }) {
   const titleRef = useRef(null);
   const streamRef = useRef(null);
   const chatRef = useRef(null);
+  const exploreButtonRef = useRef(null);
   const webhookUrl = service.aiType ? WEBHOOKS[service.aiType] : "";
   const isConnected = Boolean(webhookUrl);
   const [input, setInput] = useState("");
@@ -296,6 +499,13 @@ function ServiceDetailPage({ service, onBack }) {
   ]);
   const [isSending, setIsSending] = useState(false);
   const [availability, setAvailability] = useState("Ready");
+  const [profile, setProfile] = useState(() => loadVisitorProfile());
+  const [chatProfile, setChatProfile] = useState(null);
+  const [updateConsent, setUpdateConsent] = useState(false);
+  const [isChatOpen, setIsChatOpen] = useState(false);
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
+  const [profileModalMode, setProfileModalMode] = useState("welcome");
+  const [profileNotice, setProfileNotice] = useState("");
   const sessionId = useRef(
     globalThis.crypto?.randomUUID?.() ?? `${service.id}-${Date.now()}`,
   );
@@ -307,6 +517,68 @@ function ServiceDetailPage({ service, onBack }) {
   useEffect(() => {
     streamRef.current?.scrollTo({ top: streamRef.current.scrollHeight, behavior: "smooth" });
   }, [messages, isSending]);
+
+  const openProfileModal = (mode = "welcome") => {
+    setProfileModalMode(mode);
+    setIsProfileModalOpen(true);
+  };
+
+  const handleExplore = () => {
+    if (isChatOpen) {
+      chatRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      return;
+    }
+
+    openProfileModal("welcome");
+  };
+
+  const handleProfileSubmit = (nextProfile, nextConsent) => {
+    const remembered = saveVisitorProfile(nextProfile);
+    const isFirstOpen = !isChatOpen;
+
+    setProfile(nextProfile);
+    setChatProfile(nextProfile);
+    setUpdateConsent(nextConsent);
+    setIsChatOpen(true);
+    setIsProfileModalOpen(false);
+    setProfileNotice(
+      remembered
+        ? profileModalMode === "edit"
+          ? "Profile updated on this device."
+          : "Profile saved on this device."
+        : "Your details are active for this chat, but this browser could not remember them.",
+    );
+
+    if (isFirstOpen) {
+      setMessages([
+        {
+          id: "welcome",
+          role: "agent",
+          text: createPersonalizedWelcome(service.welcomeMessage, nextProfile.name),
+        },
+      ]);
+      requestAnimationFrame(() => {
+        chatRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+    }
+  };
+
+  const handleClearProfile = () => {
+    clearVisitorProfile();
+    setProfile(null);
+    setChatProfile(null);
+    setUpdateConsent(false);
+    setIsChatOpen(false);
+    setMessages([
+      {
+        id: "welcome",
+        role: "agent",
+        text: service.welcomeMessage,
+      },
+    ]);
+    setProfileNotice("Saved profile cleared from this device.");
+    setAvailability("Ready");
+  };
 
   const sendMessage = async (event) => {
     event.preventDefault();
@@ -322,7 +594,13 @@ function ServiceDetailPage({ service, onBack }) {
     setIsSending(true);
 
     try {
-      const { reply, limited } = await sendToAI(service.aiType, chatInput, sessionId.current);
+      const { reply, limited } = await sendToAI(
+        service.aiType,
+        chatInput,
+        sessionId.current,
+        chatProfile,
+        updateConsent,
+      );
       setAvailability(limited ? "Limited support" : "Online");
       setMessages((current) => [
         ...current,
@@ -382,86 +660,115 @@ function ServiceDetailPage({ service, onBack }) {
           </div>
 
           <button
+            ref={exploreButtonRef}
             type="button"
             className="service-detail__chat-link"
-            onClick={() => chatRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })}
+            onClick={handleExplore}
           >
-            Explore AI assistant <ArrowIcon />
+            {isChatOpen ? "Go to conversation" : "Explore AI assistant"} <ArrowIcon />
           </button>
-        </div>
-      </section>
-
-      <section
-        ref={chatRef}
-        className="conversation-panel service-chat-panel"
-        aria-labelledby="service-chat-title"
-      >
-        <header className="conversation-panel__header">
-          <div className="conversation-agent">
-            <AgentAvatar />
-            <span>
-              <small>{service.name}</small>
-              <h2 id="service-chat-title">AI Assistant</h2>
-            </span>
-          </div>
-          <div className={`conversation-panel__status${!isConnected || availability === "Limited support" || availability === "Temporarily unavailable" ? " is-pending" : ""}`}>
-            <i aria-hidden="true" /> {isConnected ? availability : "Ready for n8n"}
-          </div>
-        </header>
-
-        {!isConnected && (
-          <div className="chat-connection-note" role="status">
-            <span>Connection pending</span>
-            Add this agent's n8n webhook to activate live conversations.
-          </div>
-        )}
-
-        <div className="conversation-stream" ref={streamRef}>
-          <div className="conversation-date" aria-hidden="true">
-            <span>Agent workspace</span>
-          </div>
-
-          {messages.map((message) => (
-            <div key={message.id} className={`message-row message-row--${message.role}`}>
-              {message.role === "agent" && <AgentAvatar />}
-              <div
-                className={`message-bubble message-bubble--${message.role}${message.error ? " is-error" : ""}`}
-              >
-                <span className="message-bubble__label">
-                  {message.role === "user" ? "You" : service.name}
-                </span>
-                <p>{message.text}</p>
-                <small>Just now</small>
-              </div>
-            </div>
-          ))}
-
-          {isSending && (
-            <div className="message-row message-row--agent">
-              <AgentAvatar />
-              <div className="message-bubble message-bubble--agent" role="status">
-                <span className="message-bubble__label">{service.name}</span>
-                <ThinkingIndicator />
-              </div>
-            </div>
+          {!isChatOpen && profileNotice && (
+            <p className="service-detail__profile-notice" role="status" aria-live="polite">
+              {profileNotice}
+            </p>
           )}
         </div>
-
-        <form className="chat-composer" onSubmit={sendMessage}>
-          <label className="sr-only" htmlFor="service-chat-input">Message {service.name}</label>
-          <input
-            id="service-chat-input"
-            value={input}
-            onChange={(event) => setInput(event.target.value)}
-            placeholder={isConnected ? "Type your message..." : "Connect the n8n webhook to start chatting"}
-            autoComplete="off"
-            disabled={!isConnected || isSending}
-          />
-          <button type="submit" disabled={!isConnected || !input.trim() || isSending}>
-            Send <ArrowIcon />
-          </button>
-        </form>
       </section>
+
+      {isChatOpen && (
+        <section
+          ref={chatRef}
+          className="conversation-panel service-chat-panel"
+          aria-labelledby="service-chat-title"
+        >
+          <header className="conversation-panel__header">
+            <div className="conversation-agent">
+              <AgentAvatar />
+              <span>
+                <small>{service.name}</small>
+                <h2 id="service-chat-title">AI Assistant</h2>
+              </span>
+            </div>
+            <div className="conversation-panel__controls">
+              <div className={`conversation-panel__status${!isConnected || availability === "Limited support" || availability === "Temporarily unavailable" ? " is-pending" : ""}`}>
+                <i aria-hidden="true" /> {isConnected ? availability : "Ready for n8n"}
+              </div>
+              <div className="chat-profile-actions" aria-label="Chat profile controls">
+                <span>{chatProfile?.name?.split(" ")[0]}'s profile</span>
+                <button type="button" onClick={() => openProfileModal("edit")}>Edit</button>
+                <button type="button" onClick={handleClearProfile}>Clear</button>
+              </div>
+            </div>
+          </header>
+
+          <p className="profile-status" role="status" aria-live="polite">{profileNotice}</p>
+
+          {!isConnected && (
+            <div className="chat-connection-note" role="status">
+              <span>Connection pending</span>
+              Add this agent's n8n webhook to activate live conversations.
+            </div>
+          )}
+
+          <div className="conversation-stream" ref={streamRef}>
+            <div className="conversation-date" aria-hidden="true">
+              <span>Agent workspace</span>
+            </div>
+
+            {messages.map((message) => (
+              <div key={message.id} className={`message-row message-row--${message.role}`}>
+                {message.role === "agent" && <AgentAvatar />}
+                <div
+                  className={`message-bubble message-bubble--${message.role}${message.error ? " is-error" : ""}`}
+                >
+                  <span className="message-bubble__label">
+                    {message.role === "user" ? "You" : service.name}
+                  </span>
+                  <p>{message.text}</p>
+                  <small>Just now</small>
+                </div>
+              </div>
+            ))}
+
+            {isSending && (
+              <div className="message-row message-row--agent">
+                <AgentAvatar />
+                <div className="message-bubble message-bubble--agent" role="status">
+                  <span className="message-bubble__label">{service.name}</span>
+                  <ThinkingIndicator />
+                </div>
+              </div>
+            )}
+          </div>
+
+          <form className="chat-composer" onSubmit={sendMessage}>
+            <label className="sr-only" htmlFor="service-chat-input">Message {service.name}</label>
+            <input
+              id="service-chat-input"
+              value={input}
+              onChange={(event) => setInput(event.target.value)}
+              placeholder={isConnected ? "Type your message..." : "Connect the n8n webhook to start chatting"}
+              autoComplete="off"
+              disabled={!isConnected || isSending}
+            />
+            <button type="submit" disabled={!isConnected || !input.trim() || isSending}>
+              Send <ArrowIcon />
+            </button>
+          </form>
+        </section>
+      )}
+
+      {isProfileModalOpen && (
+        <VisitorProfileModal
+          service={service}
+          savedProfile={profile}
+          initialConsent={profileModalMode === "edit" ? updateConsent : false}
+          mode={profileModalMode}
+          onCancel={() => setIsProfileModalOpen(false)}
+          onClear={handleClearProfile}
+          onSubmit={handleProfileSubmit}
+        />
+      )}
     </main>
   );
 }
