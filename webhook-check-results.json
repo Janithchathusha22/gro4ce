@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-09-25T17:07:26.767Z",
+  "checkedAt": "2026-10-03T09:55:31.234Z",
   "origin": "https://gro4ce.vercel.app",
   "results": [
     {
@@ -8,11 +8,11 @@
       "preflightStatus": 204,
       "preflightPassed": true,
       "status": 200,
-      "reply": "I found two fuel-efficient automatic cars under LKR 8,000,000:\n\n1. Suzuki Wagon R (Hybrid)\n   Year: 2018\n   Price: LKR 4,650,000\n   Showroom: Colombo\n   Status: Available\n\n2. Toyota RAV4 (Petrol)\n   Year: 2022\n   Price: LKR 7,810,000\n   Showroom: Kandy\n   Status: Available\n\nPlease let me know if you want more details about any of these vehicles.",
+      "reply": "I found a fuel-efficient automatic car under LKR 8,000,000 for you: a 2022 Toyota RAV4, petrol, automatic transmission, with 88,905 km mileage. It's listed at LKR 7,810,000 and available at the Kandy showroom. Because you mentioned fuel efficiency and automatic transmission within your budget, this SUV could be a good fit. Would you like details on test drive availability or other options?",
       "limited": false,
       "postCorsPassed": true,
       "passed": true,
-      "seconds": 7.96
+      "seconds": 5.56
     },
     {
       "name": "VITE_LANKA_ELECTRO_MART_WEBHOOK",
@@ -20,11 +20,11 @@
       "preflightStatus": 204,
       "preflightPassed": true,
       "status": 200,
-      "reply": "I found a Smart TV that fits your budget:\n\n1. **Smart TV 43 Demo**\n   - Brand: Samsung\n   - Size: 43 inch\n   - Resolution: 4K\n   - Price: LKR 112,000\n   - Warranty: 24 months\n   - Stock Availability:\n     - Colombo: 7 units\n     - Galle: 3 units\n     - Jaffna: 2 units\n\nWould you like more information about this Smart TV, or are you interested in exploring more options?",
+      "reply": "I couldn't find any televisions available under LKR 150,000 in our current catalogue. Is there a specific brand or size you're looking for? Let me know so I can assist you further.",
       "limited": false,
       "postCorsPassed": true,
       "passed": true,
-      "seconds": 8.45
+      "seconds": 7.81
     },
     {
       "name": "VITE_AI_ACADEMY_WEBHOOK",
@@ -32,23 +32,11 @@
       "preflightStatus": 204,
       "preflightPassed": true,
       "status": 200,
-      "reply": "I have found some Accounting tutors available in Colombo. Here are the options along with their fees and details:\n\n1. Tutor: Mr. Sutharsan Chandrasekaram\n   - Designation: Senior Tutor\n   - Qualification: Degree Holder\n   - Teaching Format: Physical and Online\n   - Medium: Sinhala, English\n   - Teaching Style: Self-taught subject specialist; simplifies difficult topics\n   - Experience: 16 years\n   - Physical Fee: LKR 3600\n   - Online Fee: LKR 2200\n\n2. Tutor: Ms. Priya Sivalingam\n   - Designation: Tutor\n   - Qualification: Degree Holder\n   - Teaching Format: Physical and Online\n   - Medium: Sinhala\n   - Teaching Style: Structured, syllabus-first teaching with model-paper practice\n   - Experience: 4 years\n   - Physical Fee: LKR 11700\n   - Online Fee: LKR 2250\n\n3. Tutor: Mrs. Erandi Perera\n   - Designation: Junior Tutor\n   - Qualification: Degree Holder\n   - Teaching Format: Physical and Online\n   - Medium: Sinhala\n   - Teaching Style: Interactive, question-driven\n   - Experience: 1 year\n   - Physical Fee: LKR 2800\n   - Online Fee: LKR 1800\n\nThese are the tutors available for Accounting classes in Colombo. Let me know if you would like more information or if you have a preference.",
+      "reply": "I have found two A/L Accounting tutors available for online classes in Colombo:\n\n1. **Mr. Sutharsan Chandrasekaram**\n   - Designation: Senior Tutor\n   - Qualification Type: Degree Holder\n   - Teaching Format: Online\n   - Medium: Sinhala, English\n   - Fee: LKR 2200 (Online), LKR 3600 (Physical)\n   - Experience: 16 years\n   - Teaching Style: Self-taught subject specialist; highly popular for simplifying difficult topics\n\n2. **Ms. Champika Senanayake**\n   - Designation: Tutor\n   - Qualification Type: Degree Holder\n   - Teaching Format: Online\n   - Medium: English\n   - Fee: LKR 2500 (Online & Physical)\n   - Experience: 4 years\n   - Teaching Style: Known for exam-technique coaching and time-management drills\n\nI recommend **Mr. Sutharsan Chandrasekaram** for his extensive experience of 16 years and his ability to simplify complex topics, which students find extremely helpful.",
       "limited": false,
       "postCorsPassed": true,
       "passed": true,
-      "seconds": 12.1
-    },
-    {
-      "name": "VITE_LANKA_GLOW_WEBHOOK",
-      "url": "https://vmi3604779.contaboserver.net/webhook/lanka-glow-chat",
-      "preflightStatus": 204,
-      "preflightPassed": true,
-      "status": 200,
-      "reply": "In Colombo, for Global Hair Colouring services at Lanka Glow Salon, the price range is LKR 7,450 to LKR 18,900. Please note that the exact price can vary based on hair length, products used, and stylist seniority.",
-      "limited": false,
-      "postCorsPassed": true,
-      "passed": true,
-      "seconds": 6.43
+      "seconds": 10.77
     },
     {
       "name": "VITE_CEYLON_WEBHOOK",
@@ -56,11 +44,23 @@
       "preflightStatus": 204,
       "preflightPassed": true,
       "status": 200,
-      "reply": "Ceylon Cinnamon has multiple grades/forms. Could you please specify which grade or form you want? For example, Quills Alba Grade, Quills C5 Special, Cinnamon Chips, or Ground Powder?",
+      "reply": "For Ceylon cinnamon, the minimum wholesale order is 5 kg per SKU. Could you please specify which grade or form of Ceylon cinnamon you are interested in? For example, Alba or C5 grade, and whether you want quills, powder, or chips? This will help me provide the accurate price for 10 kg.",
       "limited": false,
       "postCorsPassed": true,
       "passed": true,
-      "seconds": 6.68
+      "seconds": 4.25
+    },
+    {
+      "name": "VITE_LANKA_GLOW_WEBHOOK",
+      "url": "https://vmi3604779.contaboserver.net/webhook/lanka-glow-chat",
+      "preflightStatus": 204,
+      "preflightPassed": true,
+      "status": 200,
+      "reply": "In Colombo, we offer the Global Hair Colour service with indicative prices ranging from LKR 7,450 to 18,900. For exact pricing, it's best to consider factors like hair length, products used, and stylist seniority. Here are some Colour Specialists who can help you:\n1. Mrs. Yalini Sivalingam\n   Rating: 4.9\n   Experience: 7 years\n   Schedule: Mon-Sun, Off on Tuesday, 9:30 AM - 5:30 PM\n   Fee Range: LKR 3,500 – 15,000\n2. Ms. Nishadi Kularatne\n   Rating: 4.7\n   Experience: 4 years\n   Schedule: Tue-Sun, Off on Monday, 10:00 AM - 6:00 PM\n   Fee Range: LKR 3,500 – 15,000\n3. Mrs. Madhavi Gunawardena\n   Rating: 4.6\n   Experience: 10 years\n   Schedule: Mon-Sun, Off on Thursday, 11:00 AM - 7:00 PM\n   Fee Range: LKR 3,500 – 15,000",
+      "limited": false,
+      "postCorsPassed": true,
+      "passed": true,
+      "seconds": 5.57
     },
     {
       "name": "VITE_LANKA_LEGAL_WEBHOOK",
@@ -68,24 +68,11 @@
       "preflightStatus": 204,
       "preflightPassed": true,
       "status": 200,
-      "reply": "I found 5 lawyers for your property boundary dispute in Colombo. Here are the top three:\n\n1. Imran Lafir (LLP-198), Legal Trainee, Colombo (Head Office), Fee: LKR 1600\n2. Munira Uwais (LLP-006), Senior Partner, Galle, Fee: LKR 23600\n3. Naflah Careemjee (LLP-030), Partner, Jaffna, Fee: LKR 16500\n\nWould you like to know the availability of any of these lawyers or need more details?",
+      "reply": "I found several lawyers for your property boundary dispute in Colombo:\n\n1. Imran Lafir (Legal Trainee) - Based in Colombo (Head Office), speaks Sinhala, Tamil, English, Arabic. Consultation fee: LKR 1,600. Available online Wed-Fri and in person Tue, Sat.\n2. Munira Uwais (Senior Partner) - Based in Galle, speaks Tamil, English. Consultation fee: LKR 23,600. Available online Tue, Wed and in person Mon, Thu, Sat.\n3. Naflah Careemjee (Partner) - Based in Jaffna, speaks Sinhala, English. Consultation fee: LKR 16,500. Available online Tue, Wed, Sat and in person Mon, Fri.\n4. Naushad Rizvi (Partner) - Based in Batticaloa, speaks Sinhala, English, working French. Consultation fee: LKR 13,700. Available online Thu, Sat and in person Mon-Wed.\n5. Erandi Wickramaratne (Associate Partner) - Based in Anuradhapura, speaks Tamil, English, working Arabic. Consultation fee: LKR 8,300. Available online Mon, Tue, Fri and in person Thu, Sat.\n\nBecause you mentioned Colombo, Imran Lafir is the closest match with the lowest consultation fee. Would you like to book a consultation with him or hear about availability for another lawyer? Also, do you prefer an online or in-person consultation?",
       "limited": false,
       "postCorsPassed": true,
       "passed": true,
-      "seconds": 10.05
-    },
-    {
-      "name": "VITE_MERIDIAN_FINANCE_WEBHOOK",
-      "url": "https://vmi3604779.contaboserver.net/webhook/c6d586f8-103f-4ccd-8e95-705f7f49a6e0/chat",
-      "preflightStatus": 204,
-      "preflightPassed": true,
-      "status": 200,
-      "reply": "For a flat-rate lease of LKR 1,000,000 at an annual rate of 15%, the estimated monthly installment for 24 months would be LKR 54,166.67. The total interest payable would be LKR 300,000, making the total amount payable LKR 1,300,000. This estimate excludes fees and insurance.",
-      "limited": false,
-      "postCorsPassed": true,
-      "passed": true,
-      "calculatorPassed": true,
-      "seconds": 3.6
+      "seconds": 14.07
     },
     {
       "name": "VITE_SENTINEL_INSURANCE_WEBHOOK",
@@ -93,11 +80,24 @@
       "preflightStatus": 204,
       "preflightPassed": true,
       "status": 200,
-      "reply": "**Comprehensive Motor Insurance** provides the following coverage:\n- Accidental loss/damage to own vehicle\n- Third-party bodily injury/property damage\n- Theft\n- Natural disasters\n\nExclusions include:\n- Driving under the influence\n- Unlicensed driving\n\nClaims for Comprehensive Motor Insurance can be handled through **motor-claims@sentinelinsurance.lk**.",
+      "reply": "The Sentinel Motor Comprehensive insurance covers accidental loss/damage to one's own vehicle, third-party bodily injury/property damage, theft, and natural disasters. The sum insured is based on the vehicle's market value, and the indicative premium ranges from 2.5% to 4.5% of the sum insured per annum. \n\nExclusions for the Sentinel Motor Comprehensive insurance include driving under the influence and unlicensed driving. Claims for this policy can be handled by contacting motor-claims@sentinelinsurance.lk.",
       "limited": false,
       "postCorsPassed": true,
       "passed": true,
-      "seconds": 5.88
+      "seconds": 4.35
+    },
+    {
+      "name": "VITE_MERIDIAN_FINANCE_WEBHOOK",
+      "url": "https://vmi3604779.contaboserver.net/webhook/c6d586f8-103f-4ccd-8e95-705f7f49a6e0/chat",
+      "preflightStatus": 204,
+      "preflightPassed": true,
+      "status": 200,
+      "reply": "For a flat-rate lease of LKR 1,000,000 at an annual rate of 15% over 24 months, the monthly installment would be approximately LKR 54,166.67. The total interest payable over the 24 months would be LKR 300,000, making the total amount payable LKR 1,300,000. Please note that this is an illustrative estimate excluding fees and insurance. Actual terms will require confirmation from the lender.",
+      "limited": false,
+      "postCorsPassed": true,
+      "passed": true,
+      "calculatorPassed": true,
+      "seconds": 4.65
     },
     {
       "name": "VITE_TEEN_MASTER_OF_BUSINESS_WEBHOOK",
@@ -105,11 +105,11 @@
       "preflightStatus": 204,
       "preflightPassed": true,
       "status": 200,
-      "reply": "The Teen Master of Business Programme aims to teach a 15-year-old student various essential business skills and concepts. Here are some key aspects of what a 15-year-old student can learn from the programme:\n\n- Your child will learn about the entrepreneurial mindset, opportunity recognition, creative thinking, and developing a growth mindset.\n- They will understand markets, target customers, perform market research, and build customer personas.\n- The programme covers building a business model, financial aspects such as understanding business numbers, marketing strategies, branding, and sustainable business practices.\n- Students will also gain leadership skills, learn about digital business tools, AI for business, ethics, sustainable business practices, and hone communication and negotiation skills.\n- The curriculum includes practical activities, case studies, real-world examples, and a capstone project where students launch and manage a real micro-enterprise.\n\nThe programme is designed to provide practical exposure and learning experiences for young entrepreneurs, helping them develop crucial business acumen and skills in a supportive educational environment.",
+      "reply": "The Teen Master of Business Programme is designed specifically for students aged 13 to 19, providing an engaging and practical approach to business education. For a 15-year-old, the programme covers a variety of essential topics that help them understand real-world business concepts. \n\nHere's an overview of what students learn:\n\n1. The Entrepreneurial Mindset:\n- Develops creativity, resilience, and self-awareness in recognizing business opportunities.\n\n2. Understanding Markets & Customers:\n- Teaches how to identify target customers and conduct market research to gather insights.\n\n3. Building a Business Model:\n- Focuses on presenting business ideas effectively and creating a solid business plan.\n\n4. Finance for Business & Value Creation:\n- Introduces financial literacy and understanding business metrics.\n\n5. Marketing & Brand Building:\n- Covers strategies to make a business memorable and engaging to customers.\n\n6. Leadership, Teams & People Skills:\n- Explores how to lead effectively and build collaborative teams.\n\n7. Digital Business & AI for Business:\n- Discusses leveraging digital technologies and AI for business growth.\n\n8. Ethics, Conscience & Sustainable Business:.",
       "limited": false,
       "postCorsPassed": true,
       "passed": true,
-      "seconds": 8.3
+      "seconds": 15.12
     },
     {
       "name": "VITE_PERSONAL_BRANDING_WEBHOOK",
@@ -117,11 +117,11 @@
       "preflightStatus": 204,
       "preflightPassed": true,
       "status": 200,
-      "reply": "Senela can offer a customized leadership workshop focusing on developing key leadership skills such as communication, decision-making, and team management. This workshop can be tailored to the specific needs and goals of the organization, helping to enhance leadership capability and drive organizational success.",
+      "reply": "Hello! Senela can certainly help with a leadership workshop for your organization. To provide a tailored recommendation, could you please share more details about the organizational challenge, participant roles/count, desired practical changes, format/location, timeline, and how success will be judged for this workshop? This information will help ensure that Senela's approach aligns perfectly with your organization's needs.",
       "limited": false,
       "postCorsPassed": true,
       "passed": true,
-      "seconds": 5.83
+      "seconds": 4.89
     }
   ]
 }

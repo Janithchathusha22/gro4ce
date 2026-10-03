@@ -101,12 +101,16 @@ export function createWebhookRequest(webhooks, type, payload) {
 
   if (!webhookUrl) throw new Error(`Unknown AI type: ${type}`);
 
+  const body = createWebhookPayload(payload);
+  // The Academy Normalize Input node reads top-level `name`.
+  if (type === "aiAcademy") body.name = body.visitor_name;
+
   return {
     url: webhookUrl,
     options: {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(createWebhookPayload(payload)),
+      body: JSON.stringify(body),
     },
   };
 }

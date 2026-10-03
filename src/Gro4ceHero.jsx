@@ -256,7 +256,7 @@ function getWebhookReply(payload) {
     data?.message ??
     data?.response ??
     data?.answer ??
-    "Your request was received, but the assistant returned an empty response."
+    null
   );
 }
 

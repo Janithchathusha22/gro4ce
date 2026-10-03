@@ -83,6 +83,26 @@ test("update consent is explicit and false unless selected for that chat", () =>
   assert.equal(JSON.parse(request.options.body).update_consent, false);
 });
 
+test("Academy receives its confirmed top-level name field without changing other services", () => {
+  const webhooks = {
+    aiAcademy: "https://example.test/academy",
+    personalBranding: "https://example.test/personal-branding",
+  };
+  const payload = {
+    message: "I need a Physics tutor",
+    sessionId: "student-session",
+    profile: { name: "Audit Nimal", email: "audit.nimal@example.invalid" },
+    updateConsent: false,
+  };
+
+  const academy = JSON.parse(createWebhookRequest(webhooks, "aiAcademy", payload).options.body);
+  const branding = JSON.parse(createWebhookRequest(webhooks, "personalBranding", payload).options.body);
+
+  assert.equal(academy.name, "Audit Nimal");
+  assert.equal(academy.visitor_name, "Audit Nimal");
+  assert.equal(Object.hasOwn(branding, "name"), false);
+});
+
 test("welcome uses the first name naturally once", () => {
   assert.equal(
     createPersonalizedWelcome("Welcome to Lanka Electro Mart. What product can I help you find today?", "Nimal Perera"),

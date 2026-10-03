@@ -93,6 +93,16 @@ document.querySelector('.profile-form__submit').click(); return true; })()
   Assert-Ui ([bool](Eval-Js 'document.querySelector(''.message-bubble--agent p'').textContent.startsWith(''Hi Nimal,'' )')) 'Welcome should use the visitor first name.'
   Assert-Ui ([bool](Eval-Js 'JSON.parse(localStorage.getItem(''gro4ce.visitor-profile.v1'')).email === ''nimal@example.com''')) 'Profile should persist in localStorage.'
 
+  Send-Cdp 'Page.reload' | Out-Null
+  Start-Sleep -Seconds 2
+  Eval-Js 'document.querySelector(''[aria-label*="Lanka Electro Mart"]'').click(); true' | Out-Null
+  Eval-Js 'document.querySelector(''.service-detail__chat-link'').click(); true' | Out-Null
+  Start-Sleep -Milliseconds 200
+  Assert-Ui ([bool](Eval-Js 'document.querySelector(''#visitor-name'').value === ''Nimal Perera'' && document.querySelector(''#visitor-email'').value === ''nimal@example.com''')) 'Returning visit should prefill the saved profile.'
+  Assert-Ui (-not [bool](Eval-Js 'document.querySelector(''#visitor-update-consent'').checked')) 'Returning visit should not reuse update consent.'
+  Eval-Js 'document.querySelector(''.profile-form__submit'').click(); true' | Out-Null
+  Start-Sleep -Milliseconds 250
+
   Eval-Js 'document.querySelector(''.chat-profile-actions button'').click(); true' | Out-Null
   Start-Sleep -Milliseconds 200
   Eval-Js @'
@@ -118,6 +128,7 @@ document.querySelector('.profile-form__submit').click(); return true; })()
     invalidEmail = 'passed'
     consentDefaultUnchecked = 'passed'
     persistence = 'passed'
+    returningVisit = 'passed'
     edit = 'passed'
     clear = 'passed'
     personalizedWelcome = 'passed'
