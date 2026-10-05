@@ -56,6 +56,7 @@ test("webhook request targets only the selected service and includes the profile
   const request = createWebhookRequest(webhooks, "lankaElectroMart", {
     message: "Do you have SKU TV-01?",
     sessionId: "session-123",
+    requestId: "message-123",
     profile: { name: "Nimal Perera", email: "nimal@example.com" },
     updateConsent: true,
   });
@@ -69,7 +70,31 @@ test("webhook request targets only the selected service and includes the profile
     visitor_name: "Nimal Perera",
     visitor_email: "nimal@example.com",
     update_consent: true,
+    name: "Nimal Perera",
+    email: "nimal@example.com",
+    request_id: "message-123",
   });
+});
+
+test("Electro Mart keeps a conversation session while identifying each message and its retry", () => {
+  const webhooks = { lankaElectroMart: "https://example.test/electro" };
+  const payload = {
+    message: "Mage budget eka 20000. Phone ekak one",
+    sessionId: "electro-session",
+    profile: { name: "Demo Buyer", email: "buyer@example.com" },
+    updateConsent: false,
+  };
+  const first = JSON.parse(createWebhookRequest(webhooks, "lankaElectroMart", payload).options.body);
+  const second = JSON.parse(createWebhookRequest(webhooks, "lankaElectroMart", { ...payload, message: "Storage eka kiyada?" }).options.body);
+  const retry = JSON.parse(createWebhookRequest(webhooks, "lankaElectroMart", { ...payload, requestId: first.request_id }).options.body);
+
+  assert.equal(first.session_id, second.session_id);
+  assert.notEqual(first.request_id, second.request_id);
+  assert.equal(retry.request_id, first.request_id);
+  assert.equal(first.name, "Demo Buyer");
+  assert.equal(first.email, "buyer@example.com");
+  assert.equal(first.update_consent, false);
+  assert.equal(Object.hasOwn(first, "business_id"), false);
 });
 
 test("update consent is explicit and false unless selected for that chat", () => {
