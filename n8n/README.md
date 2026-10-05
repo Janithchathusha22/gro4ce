@@ -1,9 +1,10 @@
 # Production workflow repairs — 2026-09-25
 
-## Lanka Electro Mart website prompt — 2026-10-03
+## Lanka Electro Mart website prompt — 2026-10-05
 
-`lanka-electro-mart-system-prompt.txt` contains the supplied v1.0 Lanka Electro Mart
-system prompt plus the Gro4ce website-channel addendum. This repository does not
+`lanka-electro-mart-system-prompt.txt` contains the supplied demo-mode Lanka Electro
+Mart system prompt for the connected Supabase V4 catalogue and supported demo
+transactions. This repository does not
 contain a Lanka Electro Mart n8n workflow export, and no authenticated n8n editor
 access was available for this change. Paste the full file into the correct Lanka
 Electro Mart AI Agent system-prompt field, save it, activate the workflow, and run
