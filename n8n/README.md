@@ -24,15 +24,19 @@ this local fix.
 
 `lanka-electro-mart-system-prompt.txt` contains the supplied demo-mode Lanka Electro
 Mart system prompt for the connected Supabase V4 catalogue and supported demo
-transactions. This repository does not
-contain a Lanka Electro Mart n8n workflow export, and no authenticated n8n editor
-access was available for this change. Paste the full file into the correct Lanka
+transactions. `lanka-electro-mart-v5-ready.json` is the supplied workflow export;
+its presence does not confirm that it is active in the hosted n8n instance.
+Paste the full prompt file into the correct Lanka
 Electro Mart AI Agent system-prompt field, save it, activate the workflow, and run
 the acceptance checks before treating it as deployed.
 
 The website now sends these fields only to the selected service webhook:
 `channel`, `session_id`, `message`, `visitor_name`, `visitor_email`, and
-`update_consent`. Map them explicitly in n8n and keep memory, lead storage, and
+`update_consent`. Electro Mart additionally receives top-level `name`, `email`,
+and a unique `request_id`, matching its Normalize Input contract. Each new
+message receives a new request ID; a retry of the same logical action must reuse
+its original ID. Keep one `session_id` for the conversation. Map the fields
+explicitly in n8n and keep memory, lead storage, and
 tools scoped to the Lanka Electro Mart business identity. The public webhook must
 not accept a client-provided business ID as authority to select another business.
 

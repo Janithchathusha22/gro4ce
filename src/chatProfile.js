@@ -104,6 +104,14 @@ export function createWebhookRequest(webhooks, type, payload) {
   const body = createWebhookPayload(payload);
   // The Academy Normalize Input node reads top-level `name`.
   if (type === "aiAcademy") body.name = body.visitor_name;
+  // Electro Mart's Normalize Input reads these top-level fields. Keep the
+  // visitor fields for compatibility; profile details do not authorize records.
+  if (type === "lankaElectroMart") {
+    body.name = body.visitor_name;
+    body.email = body.visitor_email;
+    body.request_id = payload.requestId || globalThis.crypto?.randomUUID?.() ||
+      `${payload.sessionId}-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
+  }
 
   // CarLoop currently answers `message` but does not consume visitor_name.
   // Carry only the supplied name through that existing input until the workflow

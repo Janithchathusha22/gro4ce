@@ -63,7 +63,7 @@ const services = [
     description: `Lanka Electro Mart is an electronics retail business offering a wide range of electrical and electronic items, from home appliances and televisions to mobile phones, kitchen equipment, and everyday gadgets. Instead of browsing an entire catalogue yourself, describe what you need to the AI agent. It can recommend suitable options for your requirement and budget, explain model differences, provide current pricing, identify the nearest branch with stock, and help prepare formal quotations for comparisons or bulk orders.`,
     capabilities: ["Product recommendations", "Model and price comparisons", "Branch stock checks", "Formal quotations"],
     aiType: "lankaElectroMart",
-    welcomeMessage: "Welcome to Lanka Electro Mart. What product can I help you find today?",
+    welcomeMessage: "Welcome to Lanka Electro Mart's AI demo. What product can I help you find today?",
   },
   {
     id: "ai-academy-sl",
