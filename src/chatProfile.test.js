@@ -114,6 +114,36 @@ test("welcome uses the first name naturally once", () => {
   );
 });
 
+test("CarLoop carries the current profile name in its message without altering other services", () => {
+  const webhooks = {
+    carloop: "https://example.test/carloop",
+    lankaElectroMart: "https://example.test/electro",
+  };
+  const payload = {
+    message: "What is my name?",
+    sessionId: "carloop-session",
+    profile: { name: "Nimal Perera", email: "nimal@example.com" },
+    updateConsent: false,
+  };
+  const bodyFor = (type, input = payload) =>
+    JSON.parse(createWebhookRequest(webhooks, type, input).options.body);
+  const carloop = bodyFor("carloop");
+  assert.ok(carloop.message.includes(JSON.stringify({ name: "Nimal Perera" })));
+  assert.ok(carloop.message.endsWith("Customer message:\nWhat is my name?"));
+  assert.equal(carloop.message.includes(payload.profile.email), false);
+  assert.equal(carloop.visitor_name, "Nimal Perera");
+  assert.equal(carloop.session_id, payload.sessionId);
+  assert.equal(carloop.update_consent, false);
+  assert.equal(bodyFor("lankaElectroMart").message, payload.message);
+  const edited = bodyFor("carloop", {
+    ...payload,
+    profile: { ...payload.profile, name: "Nimali Perera" },
+  });
+  assert.ok(edited.message.includes(JSON.stringify({ name: "Nimali Perera" })));
+  assert.equal(edited.message.includes("Nimal Perera"), false);
+  assert.equal(payload.message, "What is my name?");
+});
+
 test("unknown services cannot inherit or fall through to another webhook", () => {
   assert.throws(
     () => createWebhookRequest({ known: "https://example.test/chat" }, "missing", {

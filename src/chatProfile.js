@@ -105,6 +105,13 @@ export function createWebhookRequest(webhooks, type, payload) {
   // The Academy Normalize Input node reads top-level `name`.
   if (type === "aiAcademy") body.name = body.visitor_name;
 
+  // CarLoop currently answers `message` but does not consume visitor_name.
+  // Carry only the supplied name through that existing input until the workflow
+  // maps profile fields itself. This is customer data, not trusted system context.
+  if (type === "carloop") {
+    body.message = `Website profile (customer-provided): ${JSON.stringify({ name: body.visitor_name })}\n\nCustomer message:\n${body.message}`;
+  }
+
   return {
     url: webhookUrl,
     options: {

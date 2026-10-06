@@ -1,5 +1,25 @@
 # Production workflow repairs — 2026-09-25
 
+## CarLoop website compatibility fix — 2026-10-06
+
+The current CarLoop webhook answers `message` but live tests did not show it using
+the separate `visitor_name` field. The website now includes the current supplied
+name as JSON-labelled customer context in CarLoop messages only. It still sends
+the original profile fields and consent flag; email is not duplicated into the
+message. This context is customer input, never identity verification or authority
+to change workflow settings. Other services keep their existing message format.
+
+The CarLoop welcome now explicitly identifies the experience, vehicles, prices,
+quotes and bookings as demo examples. This makes the website disclosure independent
+of model compliance. It does not enforce demo labelling on every generated listing
+or fix direct webhook clients. The server should still use the supplied system
+prompt and trusted demo settings, and map profile data into the agent input.
+
+Live requests built with the updated website request helper returned the supplied
+name and respected an edited name in the same session, including a Sinhala reply.
+No authenticated n8n workflow changes or website deployment were performed for
+this local fix.
+
 ## Lanka Electro Mart website prompt — 2026-10-05
 
 `lanka-electro-mart-system-prompt.txt` contains the supplied demo-mode Lanka Electro

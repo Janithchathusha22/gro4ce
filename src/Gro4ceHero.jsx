@@ -87,7 +87,7 @@ const services = [
     description: `CarLoop is a modern, multi-brand vehicle sales chain with showrooms across major Sri Lankan cities, offering hatchbacks, sedans, SUVs, vans, pickups, luxury vehicles, and limited editions. Tell the AI agent your budget, preferred brand, or ideal vehicle type and it can search inventory, compare matches by year, mileage, condition, fuel type, and price, identify the showroom holding each vehicle, share opening hours, connect you with a sales executive, and help arrange a test drive.`,
     capabilities: ["Inventory search", "Side-by-side vehicle comparisons", "Showroom and test-drive support", "New, used, and reconditioned guidance"],
     aiType: "carloop",
-    welcomeMessage: "Welcome to CarLoop. Tell me what kind of vehicle you are looking for.",
+    welcomeMessage: "Welcome to the CarLoop demo. Vehicles, prices, quotes, and bookings in this experience are demo examples. Tell me what kind of vehicle you are looking for.",
   },
   {
     id: "ceylon-kulubadu",
