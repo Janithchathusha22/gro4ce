@@ -1,0 +1,43 @@
+{
+  "checkedAt": "2026-10-07T10:19:52.697Z",
+  "siteUrl": "https://agent-demo22.vercel.app/",
+  "workflowAdminAccess": {
+    "status": 401,
+    "authenticatedRequest": false
+  },
+  "repositoryWorkflow": {
+    "workflowId": "UEByE4JhMv4G1Tx6",
+    "formatterPresent": true,
+    "formatterRemovesAsterisks": true,
+    "formatterDoesNotRewriteAdviserWording": true,
+    "responseExpression": "={{ { success: true, reply: $(\"Prepare Academy Reply\").first().json.reply } }}",
+    "mainAgentNext": "Prepare Academy Reply",
+    "model": "gpt-4.1-mini"
+  },
+  "siteStatus": 200,
+  "assets": [
+    {
+      "url": "https://agent-demo22.vercel.app/assets/index-D_O8hVdk.js",
+      "status": 200,
+      "sha256": "32a2464e59cb668cb19405cddef8688a0389414c39fcf4f43ba2b042b4cca7ca",
+      "localDistSha256": null,
+      "identicalToLocalDist": null,
+      "academyEndpoint": "https://vmi3604779.contaboserver.net/webhook/academy/chat",
+      "containsOldReplyIntroduction": false,
+      "containsOutputFixNode": false
+    }
+  ],
+  "probe": {
+    "sessionId": "academy-investigation-6c7b4e01-a373-40d3-8816-694b91f03447",
+    "message": "I'm looking for Kurunegala mathes class",
+    "requestContract": "The current website createWebhookRequest helper",
+    "endpoint": "https://vmi3604779.contaboserver.net/webhook/academy/chat",
+    "status": 200,
+    "seconds": 10.889,
+    "reply": "I have found some Combined Mathematics tutors in Kurunegala for you. Here are the top 3 options:\n\n1. **Mr. Kasun Karunaratne**\n   - Designation: Senior Tutor\n   - Qualification: Degree Holder\n   - Teaching Format: Physical and Online\n   - Medium: Sinhala, English\n   - Fee: LKR 13,800 (Physical), LKR 3,000 (Online)\n   - Experience: 9 years\n\n2. **Mr. Priyantha Herath**\n   - Designation: Tutor\n   - Qualification: Degree Holder\n   - Teaching Format: Physical and Online\n   - Medium: Sinhala\n   - Fee: LKR 8,300 (Physical), LKR 2,400 (Online)\n   - Teaching Style: Known for a structured, syllabus-first teaching style with regular model-paper practice\n   - Experience: 8 years\n\n3. **Mr. Ajith Goonetilleke**\n   - Designation: Tutor\n   - Qualification: Degree Holder\n   - Teaching Format: Physical and Online\n   - Medium: Sinhala, English\n   - Fee: LKR 1,950 (Physical), LKR 2,150 (Online)\n   - Teaching Style: Popular for clear, well-organised notes and past-paper-focused revision classes\n   - Experience: 6 years\n\nBased on their qualifications and experience, I recommend Mr. Kasun Karunaratne for your Combined Mathematics classes. He is a Senior Tutor with 9 years of experience.",
+    "hasAsterisks": true,
+    "hasSearchIntroduction": true,
+    "hasThreeOptionCatalogue": true,
+    "hasDemoDisclosure": false
+  }
+}
