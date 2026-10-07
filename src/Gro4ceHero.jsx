@@ -1,4 +1,6 @@
 import { useEffect, useRef, useState } from "react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import image01 from "../assets/1.jpg";
 import image02 from "../assets/2.jpg";
 import image03 from "../assets/3.jpg";
@@ -241,6 +243,28 @@ function ThinkingIndicator() {
       <i />
       <i />
     </span>
+  );
+}
+
+function ChatMessageContent({ text, isAgent }) {
+  if (!text) return null;
+  if (!isAgent) {
+    return <p className="message-content message-content--user">{text}</p>;
+  }
+
+  return (
+    <div className="message-content message-content--agent">
+      <ReactMarkdown
+        remarkPlugins={[remarkGfm]}
+        components={{
+          a: ({ node, ...props }) => (
+            <a {...props} target="_blank" rel="noopener noreferrer" />
+          ),
+        }}
+      >
+        {text}
+      </ReactMarkdown>
+    </div>
   );
 }
 
@@ -724,7 +748,7 @@ function ServiceDetailPage({ service, onBack }) {
                   <span className="message-bubble__label">
                     {message.role === "user" ? "You" : service.name}
                   </span>
-                  <p>{message.text}</p>
+                  <ChatMessageContent text={message.text} isAgent={message.role === "agent"} />
                   <small>Just now</small>
                 </div>
               </div>
