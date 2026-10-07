@@ -20,6 +20,7 @@ import {
   validateProfile,
 } from "./chatProfile";
 import "./Gro4ceHero.css";
+import "./ChatMessage.css";
 
 const WEBHOOKS = {
   lankaElectroMart:
