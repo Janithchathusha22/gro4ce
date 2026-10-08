@@ -29,7 +29,11 @@
   margin: 0;
   line-height: 1.62;
   color: rgba(255, 255, 255, 0.9);
-  white-space: normal;
+  white-space: pre-wrap;
+}
+
+.message-bubble p {
+  white-space: pre-wrap;
 }
 
 .message-content--agent h1,
