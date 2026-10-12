@@ -1,5 +1,32 @@
 # Production workflow repairs — 2026-09-25
 
+## Lanka Electro Mart response failure — 2026-10-12
+
+The screenshot's washing-machine question reproduces against the supplied live
+webhook using the website's `createWebhookRequest` helper. The endpoint returns
+HTTP 200 with `success: false`, `intent: "response_error"`, and the public reply
+"I couldn't prepare a complete reply. Please send your last message again."
+A fresh greeting succeeds. Browser CORS succeeds, and the deployed bundle at
+`https://agent-demo22.vercel.app/` uses the same supplied Electro Mart URL.
+The failure is therefore reproducible in the backend independently of the UI;
+the exact failing node still needs execution data.
+
+Run `node scripts/check-electro-webhook.mjs` to check a greeting and the screenshot's
+question in separate fresh sessions. It writes `electro-webhook-diagnostics.json`
+in this directory and exits nonzero on a failed response or CORS check. These
+non-transactional diagnostic chats can remain in the demo conversation history.
+Use the report's `sessionId` and `requestId` to locate the matching n8n execution.
+HTTP 200 alone does not mean a chat request succeeded.
+
+The supplied MCP endpoint and editor workflow API both returned HTTP 401 without
+authentication. No hosted workflow was changed. Inspect the failed execution's
+agent output, tool results, and reply-building node through an authenticated n8n
+connection before choosing a repair. The checked-in V5 export does not contain
+the live `response_error` response, so it cannot establish the current production
+node configuration and should not overwrite it without comparison. The local
+website tests (9) and production build passed; no website deployment was needed
+to establish this backend failure.
+
 ## CarLoop website compatibility fix — 2026-10-06
 
 The current CarLoop webhook answers `message` but live tests did not show it using

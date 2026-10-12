@@ -1,0 +1,38 @@
+{
+  "checkedAt": "2026-10-12T08:34:55.737Z",
+  "endpoint": "https://vmi3604779.contaboserver.net/webhook/lanka-electro-mart/chat",
+  "origin": "https://agent-demo22.vercel.app",
+  "probes": [
+    {
+      "name": "greeting",
+      "message": "Hello. What can you help me with?",
+      "sessionId": "electro-diagnostic-879bd361-4f8f-49b9-8282-4b5ae3840ce7",
+      "requestId": "7b88f6b6-2bb6-4457-a4f0-6dba04aad8fb",
+      "status": 200,
+      "corsPassed": true,
+      "success": true,
+      "intent": "discovery",
+      "reply": "Hello! I can help you find products, compare options, check stock, provide quotations, and assist with purchases. What are you looking for today?",
+      "passed": true,
+      "elapsedMs": 3531
+    },
+    {
+      "name": "washing-machine",
+      "message": "I need a washing machine for a family of five under LKR 180,000. What would you recommend, and why?",
+      "sessionId": "electro-diagnostic-3be3389b-0c9e-44ff-89c8-fd6cc298f69a",
+      "requestId": "4be44724-3ec3-4160-8bd7-529f00d774f0",
+      "status": 200,
+      "corsPassed": true,
+      "success": false,
+      "intent": "response_error",
+      "reply": "I couldn't prepare a complete reply. Please send your last message again.",
+      "passed": false,
+      "elapsedMs": 5005
+    }
+  ],
+  "preflight": {
+    "status": 204,
+    "passed": true
+  },
+  "passed": false
+}
