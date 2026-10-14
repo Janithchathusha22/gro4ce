@@ -1,38 +1,77 @@
 {
-  "checkedAt": "2026-10-12T08:34:55.737Z",
+  "checkedAt": "2026-10-12T09:00:49.714Z",
   "endpoint": "https://vmi3604779.contaboserver.net/webhook/lanka-electro-mart/chat",
   "origin": "https://agent-demo22.vercel.app",
   "probes": [
     {
       "name": "greeting",
       "message": "Hello. What can you help me with?",
-      "sessionId": "electro-diagnostic-879bd361-4f8f-49b9-8282-4b5ae3840ce7",
-      "requestId": "7b88f6b6-2bb6-4457-a4f0-6dba04aad8fb",
+      "sessionId": "electro-diagnostic-2f2ef583-b0eb-4294-ab61-7f3bcf8a17ed",
+      "requestId": "13b8eaf8-b095-4673-aaed-d4a12dc16a18",
       "status": 200,
       "corsPassed": true,
       "success": true,
       "intent": "discovery",
-      "reply": "Hello! I can help you find products, compare options, check stock, provide quotations, and assist with purchases. What are you looking for today?",
+      "duplicate": false,
+      "reply": "Hello! I can help you with product information, price quotes, stock availability, comparisons, and purchase assistance for electronics and appliances. What are you looking for today?",
+      "hasUnverifiedAmounts": false,
+      "hasPrivateEnvelope": false,
       "passed": true,
-      "elapsedMs": 3531
+      "elapsedMs": 5130
     },
     {
       "name": "washing-machine",
       "message": "I need a washing machine for a family of five under LKR 180,000. What would you recommend, and why?",
-      "sessionId": "electro-diagnostic-3be3389b-0c9e-44ff-89c8-fd6cc298f69a",
-      "requestId": "4be44724-3ec3-4160-8bd7-529f00d774f0",
+      "sessionId": "electro-diagnostic-9a99118c-cb5a-49cb-a587-33f106e0b592",
+      "requestId": "aa2ad5ed-70ec-413f-9af6-842c28416b59",
       "status": 200,
       "corsPassed": true,
-      "success": false,
-      "intent": "response_error",
-      "reply": "I couldn't prepare a complete reply. Please send your last message again.",
-      "passed": false,
-      "elapsedMs": 5005
+      "success": true,
+      "intent": "discovery",
+      "duplicate": false,
+      "reply": "For a family of five under LKR 180,000, I recommend the Samsung Washer W01 Demo (6kg capacity) priced at LKR 44,910 after discount. It's suitable for moderate laundry loads and fits well within your budget. If you prefer a larger capacity, the LG Washer W02 Demo (7kg) at LKR 58,410 is also a good option. Both come with a 24-month warranty.",
+      "hasUnverifiedAmounts": false,
+      "hasPrivateEnvelope": false,
+      "passed": true,
+      "elapsedMs": 7234
+    },
+    {
+      "name": "previous-budget-followup",
+      "message": "Would a 9kg model fit the budget I gave you?",
+      "sessionId": "electro-diagnostic-9a99118c-cb5a-49cb-a587-33f106e0b592",
+      "requestId": "3ff281d2-97c9-41a7-885d-02d689295429",
+      "status": 200,
+      "corsPassed": true,
+      "success": true,
+      "intent": "discovery",
+      "duplicate": false,
+      "reply": "Yes, a 9kg washing machine model fits your budget. The LG Washer W06 Demo (9kg capacity) is priced at LKR 121,410 after discount and comes with a 24-month warranty. It offers a larger capacity suitable for your family size and stays well within your LKR 180,000 budget.",
+      "hasUnverifiedAmounts": false,
+      "hasPrivateEnvelope": false,
+      "passed": true,
+      "elapsedMs": 6400
+    },
+    {
+      "name": "duplicate-followup",
+      "message": "Would a 9kg model fit the budget I gave you?",
+      "sessionId": "electro-diagnostic-9a99118c-cb5a-49cb-a587-33f106e0b592",
+      "requestId": "3ff281d2-97c9-41a7-885d-02d689295429",
+      "status": 200,
+      "corsPassed": true,
+      "success": true,
+      "intent": "duplicate",
+      "duplicate": true,
+      "reply": "Yes, a 9kg washing machine model fits your budget. The LG Washer W06 Demo (9kg capacity) is priced at LKR 121,410 after discount and comes with a 24-month warranty. It offers a larger capacity suitable for your family size and stays well within your LKR 180,000 budget.",
+      "hasUnverifiedAmounts": false,
+      "hasPrivateEnvelope": false,
+      "passed": true,
+      "cachedReplyMatches": true,
+      "elapsedMs": 1155
     }
   ],
   "preflight": {
     "status": 204,
     "passed": true
   },
-  "passed": false
+  "passed": true
 }

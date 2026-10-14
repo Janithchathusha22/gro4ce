@@ -1,0 +1,33 @@
+{
+  "workflowId": "VQbdOkKZOi2Q4ds5",
+  "previousVersionId": "97916a22-7c1b-4ea6-a9e1-ab194f248a1d",
+  "publishedVersionId": "5e76c8af-022d-46a7-a510-9b8753d75dd2",
+  "active": true,
+  "changedNodes": [
+    "Parse Chat State",
+    "Use Cached Reply",
+    "Lanka Electro Mart AI Agent",
+    "Supabase - Save Reply",
+    "OpenAI Chat Model"
+  ],
+  "connectionsUnchanged": true,
+  "credentialsUnchanged": true,
+  "nodeValidationPassed": true,
+  "localTestsPassed": 14,
+  "executions": {
+    "originalFailure": "546",
+    "greeting": "556",
+    "washingMachine": "557",
+    "previousBudgetFollowup": "558",
+    "duplicateFollowup": "559"
+  },
+  "followupTrace": {
+    "restoredBudget": { "max": 180000, "currency": "LKR" },
+    "historyHasPrivateEnvelope": false,
+    "responseStatus": "ok",
+    "agentError": null,
+    "saveResult": { "ok": true },
+    "memorySaved": true
+  },
+  "liveChecks": "electro-webhook-diagnostics.json"
+}

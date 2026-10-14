@@ -1,9 +1,9 @@
 import { writeFile } from 'node:fs/promises';
 import { createWebhookRequest } from '../src/chatProfile.js';
 
-// Two non-transactional inquiries using the website's actual request builder.
+// Non-transactional inquiries and a duplicate retry using the website's builder.
 // These live calls can remain in the demo's conversation history.
-const endpoint = 'https://vmi3604779.contaboserver.net/webhook/lanka-electro-mart/chat';
+const endpoint = 'https://vmi3604779.contaboserver.net/webhook/38c36c82-4961-410d-b91a-5f0dd7c5ea8d';
 const origin = 'https://agent-demo22.vercel.app';
 const report = { checkedAt: new Date().toISOString(), endpoint, origin, probes: [] };
 const allowsOrigin = (response) => [origin, '*'].includes(response.headers.get('access-control-allow-origin'));
@@ -28,13 +28,10 @@ try {
   report.preflight = { passed: false, error: error.message };
 }
 
-for (const [name, message] of [
-  ['greeting', 'Hello. What can you help me with?'],
-  ['washing-machine', 'I need a washing machine for a family of five under LKR 180,000. What would you recommend, and why?'],
-]) {
-  const probe = { name, message, sessionId: `electro-diagnostic-${crypto.randomUUID()}` };
+async function checkReply(name, message, { sessionId, requestId, expectedReply } = {}) {
+  const probe = { name, message, sessionId: sessionId || `electro-diagnostic-${crypto.randomUUID()}` };
   const request = createWebhookRequest({ lankaElectroMart: endpoint }, 'lankaElectroMart', {
-    message, sessionId: probe.sessionId,
+    message, sessionId: probe.sessionId, requestId,
     profile: { name: 'Connection test', email: 'electro-audit@example.invalid' },
     updateConsent: false,
   });
@@ -53,11 +50,19 @@ for (const [name, message] of [
     // Keep public reply fields only; never persist full backend error payloads.
     probe.success = data?.success;
     probe.intent = data?.intent;
+    probe.duplicate = data?.duplicate === true;
     const reply = typeof data === 'string' ? data
       : data?.reply ?? data?.output ?? data?.text ?? data?.message ?? data?.response ?? data?.answer;
     if (typeof reply === 'string') probe.reply = reply;
+    probe.hasUnverifiedAmounts = /amount not verified/i.test(reply || '');
+    probe.hasPrivateEnvelope = /sales-memory-v1|"session_key"\s*:/.test(reply || '');
     probe.passed = response.ok && probe.corsPassed && data?.success !== false
-      && typeof reply === 'string' && reply.trim().length > 0;
+      && typeof reply === 'string' && reply.trim().length > 0
+      && !probe.hasUnverifiedAmounts && !probe.hasPrivateEnvelope;
+    if (expectedReply !== undefined) {
+      probe.cachedReplyMatches = probe.duplicate && reply === expectedReply;
+      probe.passed &&= probe.cachedReplyMatches;
+    }
   } catch (error) {
     probe.error = error.message;
     probe.passed = false;
@@ -65,6 +70,20 @@ for (const [name, message] of [
   probe.elapsedMs = Date.now() - started;
   report.probes.push(probe);
   console.log(JSON.stringify(probe));
+  return probe;
+}
+
+await checkReply('greeting', 'Hello. What can you help me with?');
+const recommendation = await checkReply('washing-machine',
+  'I need a washing machine for a family of five under LKR 180,000. What would you recommend, and why?');
+if (recommendation.passed) {
+  const message = 'Would a 9kg model fit the budget I gave you?';
+  const followup = await checkReply('previous-budget-followup', message, { sessionId: recommendation.sessionId });
+  if (followup.passed) {
+    await checkReply('duplicate-followup', message, {
+      sessionId: followup.sessionId, requestId: followup.requestId, expectedReply: followup.reply,
+    });
+  }
 }
 
 report.passed = report.preflight.passed && report.probes.every((probe) => probe.passed);

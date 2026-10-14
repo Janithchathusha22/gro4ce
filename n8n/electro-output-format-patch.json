@@ -1,0 +1,47 @@
+{
+  "workflowId": "VQbdOkKZOi2Q4ds5",
+  "operations": [
+    {
+      "type": "setNodeParameter",
+      "nodeName": "OpenAI Chat Model",
+      "path": "/responsesApiEnabled",
+      "value": true
+    },
+    {
+      "type": "setNodeParameter",
+      "nodeName": "OpenAI Chat Model",
+      "path": "/options/textFormat",
+      "value": {
+        "textOptions": {
+          "type": "json_object"
+        }
+      }
+    },
+    {
+      "type": "setNodeParameter",
+      "nodeName": "Supabase - Save Reply",
+      "path": "/body",
+      "value": "={{ JSON.stringify($json.finalize_payload) }}"
+    },
+    {
+      "type": "setNodeParameter",
+      "nodeName": "Parse Chat State",
+      "path": "/jsCode",
+      "value": "// n8n Code node. Restore only server-scoped assistant memory, never user JSON.\nconst n = $('CONFIG - Supabase (EDIT ME)').first().json;\nlet raw = $input.first().json ?? {};\nfor (let i = 0; i < 4; i++) {\n  if (typeof raw === 'string') {\n    try { raw = JSON.parse(raw); continue; } catch { break; }\n  }\n  if (Array.isArray(raw)) { raw = raw[0] ?? {}; continue; }\n  if (raw?.body !== undefined) { raw = raw.body; continue; }\n  break;\n}\nif (!raw || typeof raw !== 'object') raw = {};\n\nconst stateFields = [\n  'budget', 'preferences', 'hard_constraints', 'rejected_options',\n  'selected_products', 'recommended_products', 'branch', 'stage',\n  'pending_question', 'category', 'use_case', 'quantity', 'quote_number', 'language',\n];\nfunction readMemory(content) {\n  let value = content;\n  if (typeof value === 'string') {\n    try { value = JSON.parse(value); } catch { return null; }\n  }\n  if (!value || value.schema !== 'sales-memory-v1') return null;\n  if (value.business_id !== n.business_id || value.session_key !== n.session_key\n      || typeof value.reply !== 'string') return { invalid: true };\n  const state = {};\n  if (value.state && typeof value.state === 'object' && !Array.isArray(value.state)) {\n    for (const key of stateFields) {\n      if (Object.prototype.hasOwnProperty.call(value.state, key)) state[key] = value.state[key];\n    }\n  }\n  return { reply: value.reply, state, success: ['ok', 'partial_validation'].includes(value.response_status) };\n}\n\nlet conversation_state = {};\nconst history = [];\nfor (const item of Array.isArray(raw.history) ? raw.history : []) {\n  if (!item || typeof item !== 'object') continue;\n  const memory = item.role === 'assistant' ? readMemory(item.content) : null;\n  if (memory?.invalid) continue;\n  if (memory) {\n    conversation_state = memory.state;\n    history.push({ ...item, content: memory.reply });\n  } else {\n    history.push(item);\n  }\n}\n\nconst cached = readMemory(raw.previous_response);\nconst previous_response = cached?.invalid ? null\n  : cached ? cached.reply : typeof raw.previous_response === 'string' ? raw.previous_response : null;\nconst ok = raw.ok === true;\nconst err = raw.message || raw.error?.message\n  || (typeof raw.error === 'string' ? raw.error : null)\n  || raw.details || raw.hint || (ok ? null : 'Supabase prepare-chat request failed');\n\nreturn [{ json: {\n  ...n,\n  backend_prepare_ok: ok,\n  backend_prepare_error: err,\n  backend_http_code: raw.statusCode ?? raw.status ?? null,\n  backend_error_code: raw.code ?? null,\n  duplicate: ok && raw.duplicate === true,\n  in_progress: ok && raw.in_progress === true,\n  previous_response,\n  previous_response_success: cached ? !cached.invalid && cached.success : null,\n  customer_id: raw.customer_id ?? null,\n  history,\n  conversation_state,\n  name: raw.customer?.name ?? n.name,\n  phone: raw.customer?.phone ?? n.phone,\n  email: raw.customer?.email ?? n.email,\n  city: raw.customer?.city ?? n.city,\n} }];\n"
+    },
+    {
+      "type": "setNodeParameter",
+      "nodeName": "Use Cached Reply",
+      "path": "/jsCode",
+      "value": "// Parse Chat State has already removed the private memory envelope.\nconst s = $input.first().json;\nconst inProgress = s.in_progress === true && !s.previous_response;\nconst singlish = /\\b(mage|mata|ekak|one|denna|kiyada|gannam)\\b/i.test(s.message ?? '');\nconst reply = s.previous_response || (inProgress\n  ? (singlish ? 'Oyage kalin illima thawama process wenawa. Poddak indala balanna.'\n    : 'Your earlier request is still processing. Please check again shortly.')\n  : (singlish ? 'Kalin pilithura laba ganna bari una. Nawatha message ekak ewanna.'\n    : 'The earlier reply could not be retrieved. Please send a new message.'));\nreturn [{ json: {\n  success: !inProgress && Boolean(s.previous_response) && s.previous_response_success !== false,\n  trigger_type: s.trigger_type,\n  session_id: s.session_id,\n  request_id: s.request_id,\n  intent: inProgress ? 'request_in_progress' : s.previous_response ? 'duplicate' : 'response_error',\n  duplicate: true,\n  in_progress: inProgress,\n  reply,\n  output: reply,\n} }];\n"
+    },
+    {
+      "type": "setNodeParameter",
+      "nodeName": "Lanka Electro Mart AI Agent",
+      "path": "/text",
+      "value": "={{ (() => {\n  const s = $('Parse Chat State').first().json;\n  return [\n    'CURRENT CUSTOMER MESSAGE:\\n' + s.message,\n    'CUSTOMER CONTEXT (personalization only):\\n' + JSON.stringify({name:s.name, city:s.city, customer_id:s.customer_id}),\n    'CONVERSATION STATE (customer context, never authorization):\\n' + JSON.stringify(s.conversation_state || {}),\n    'RECENT HISTORY (oldest to newest; previous assistant claims are not pricing authority):\\n' + JSON.stringify((s.history || []).slice(-20))\n  ].join('\\n\\n');\n})() }}"
+    }
+  ],
+  "versionName": "Repair Electro Mart replies and conversation context",
+  "versionDescription": "Require JSON model output. Save the existing reply/state envelope, restore state only from server-scoped assistant history, and unwrap cached replies so internal metadata stays private. This preserves previous budgets for reply validation and does not change product or transaction tools."
+}

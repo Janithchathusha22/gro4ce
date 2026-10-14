@@ -1,31 +1,65 @@
 # Production workflow repairs — 2026-09-25
 
-## Lanka Electro Mart response failure — 2026-10-12
+## Lanka Electro Mart response format repair — 2026-10-12
 
-The screenshot's washing-machine question reproduces against the supplied live
-webhook using the website's `createWebhookRequest` helper. The endpoint returns
-HTTP 200 with `success: false`, `intent: "response_error"`, and the public reply
-"I couldn't prepare a complete reply. Please send your last message again."
-A fresh greeting succeeds. Browser CORS succeeds, and the deployed bundle at
-`https://agent-demo22.vercel.app/` uses the same supplied Electro Mart URL.
-The failure is therefore reproducible in the backend independently of the UI;
-the exact failing node still needs execution data.
+Repaired and published workflow `VQbdOkKZOi2Q4ds5` through the authenticated n8n
+MCP connection. Execution `546` reproduced the screenshot: `Search_Products`
+succeeded and the AI Agent produced a product recommendation, but its output was
+plain text. The current `Build Reply` node expects a JSON object with `reply`
+and `state`, so it rejected the answer with `INVALID_AGENT_OUTPUT`. The public
+webhook returned HTTP 200 with `success: false` and `intent: "response_error"`.
 
-Run `node scripts/check-electro-webhook.mjs` to check a greeting and the screenshot's
-question in separate fresh sessions. It writes `electro-webhook-diagnostics.json`
-in this directory and exits nonzero on a failed response or CORS check. These
+`electro-output-format-patch.json` records the six parameter updates applied
+to five existing nodes:
+
+- `OpenAI Chat Model` explicitly uses its Responses API with
+  `options.textFormat.textOptions.type: "json_object"`.
+- `Supabase - Save Reply` now serializes the existing `finalize_payload` prepared
+  by Build Reply. This fixes its `invalid syntax` error and saves the existing
+  `sales-memory-v1` reply/state envelope instead of dropping conversation state.
+- `Parse Chat State` restores that state only from assistant history matching
+  the server-configured business and current session. It extracts display text
+  from memory envelopes, while continuing to accept legacy plain history.
+- The AI Agent input includes restored conversation state. This also supplies
+  prior customer budgets to the existing amount guard, preventing valid budget
+  mentions from being incorrectly redacted on follow-up turns.
+- `Use Cached Reply` returns only the display reply for duplicate requests,
+  preserving failed/in-progress status and keeping internal memory private.
+
+All changed node configurations passed n8n validation. Connections, credentials,
+product and transaction tools, system prompt, and reply validation were preserved.
+The Code node sources are in `electro-parse-chat-state.js` and
+`electro-use-cached-reply.js`. `npm test` passes all 14 tests, including legacy
+history, state restoration, isolation, duplicate replies and failure handling.
+
+- Previous published version: `97916a22-7c1b-4ea6-a9e1-ab194f248a1d`.
+- Final published version: `5e76c8af-022d-46a7-a510-9b8753d75dd2`.
+- Live greeting execution `556`: successful reply.
+- Live washing-machine execution `557`: successful product recommendation.
+- Same-session 9kg follow-up execution `558`: restored budget LKR 180,000,
+  `response_status: "ok"`, no agent error, `success: true`, and
+  `memory_saved: true`; the save RPC returned `{ "ok": true }`.
+- Retry execution `559`: `duplicate: true` with exactly the previous display
+  reply, without exposing the private envelope. Browser CORS also passed.
+
+The deployed website already uses the correct supplied webhook. Its code and
+deployment were unchanged. The earlier production build passed.
+No authentication token was written to repository files.
+
+Run `node scripts/check-electro-webhook.mjs` to check a greeting, the screenshot's
+question, a follow-up using the prior budget, and a retry with the same request ID.
+It writes `electro-webhook-diagnostics.json` in this directory and exits nonzero
+on failed replies, CORS, amount validation or duplicate-reply checks. These
 non-transactional diagnostic chats can remain in the demo conversation history.
 Use the report's `sessionId` and `requestId` to locate the matching n8n execution.
 HTTP 200 alone does not mean a chat request succeeded.
 
-The supplied MCP endpoint and editor workflow API both returned HTTP 401 without
-authentication. No hosted workflow was changed. Inspect the failed execution's
-agent output, tool results, and reply-building node through an authenticated n8n
-connection before choosing a repair. The checked-in V5 export does not contain
-the live `response_error` response, so it cannot establish the current production
-node configuration and should not overwrite it without comparison. The local
-website tests (9) and production build passed; no website deployment was needed
-to establish this backend failure.
+The checked-in `lanka-electro-mart-v5-ready.json` is an older export with a
+different reply builder. It was not imported or overwritten during this repair.
+The targeted patch is for the inspected production version above; compare any
+future workflow version before reapplying it. JSON mode ensures valid JSON, while
+the existing reply builder still validates the reply's content. These live checks
+cover the reported failure, not every sales or transaction scenario.
 
 ## CarLoop website compatibility fix — 2026-10-06
 

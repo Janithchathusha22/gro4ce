@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "test": "node --test src/chatProfile.test.js",
+    "test": "node --test src/chatProfile.test.js n8n/electro-memory.test.js",
     "preview": "vite preview"
   },
   "dependencies": {
