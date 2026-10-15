@@ -304,10 +304,14 @@ function ChatImage({ src, alt }) {
 
   return (
     <>
-      <figure className="chat-image-card">
+      <figure
+        className="chat-image-card"
+        style={{ width: "min(220px, 100%)", maxWidth: "100%" }}
+      >
         <button
           type="button"
           className="chat-image-preview-btn"
+          style={{ width: "100%", height: 180, maxWidth: "100%" }}
           onClick={() => setIsOpen(true)}
           title={cleanAlt ? `View ${cleanAlt} full size` : "Click to view full size"}
           aria-label={cleanAlt ? `View ${cleanAlt} full size` : "View image full size"}
@@ -318,6 +322,7 @@ function ChatImage({ src, alt }) {
             alt={cleanAlt || "Product image"}
             loading="lazy"
             className={`chat-image-element ${isLoaded ? "is-loaded" : ""}`}
+            style={{ maxWidth: "100%", maxHeight: "100%", width: "auto", height: "auto", objectFit: "contain" }}
             onLoad={() => setIsLoaded(true)}
             onError={() => setHasError(true)}
           />
