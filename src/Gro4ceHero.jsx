@@ -247,7 +247,32 @@ function ThinkingIndicator() {
   );
 }
 
-function ChatMessageContent({ text, isAgent }) {
+function normalizeImageUrl(url) {
+  if (typeof url !== "string") return "";
+  try {
+    return new URL(url, window.location.origin).href;
+  } catch {
+    return url.trim();
+  }
+}
+
+function stripDuplicateProductImages(text, products = []) {
+  if (typeof text !== "string" || !products.length) return text;
+
+  const productUrls = new Set(
+    products.map((item) => normalizeImageUrl(item?.image_url)).filter(Boolean),
+  );
+
+  return text
+    .replace(/!\[[^\]]*\]\(([^)\s]+)(?:\s+['"][^'"]*['"])?\)/g, (match, url) =>
+      productUrls.has(normalizeImageUrl(url)) ? "" : match,
+    )
+    .replace(/<img\b[^>]*\bsrc=["']([^"']+)["'][^>]*>/gi, (match, url) =>
+      productUrls.has(normalizeImageUrl(url)) ? "" : match,
+    );
+}
+
+function ChatMessageContent({ text, isAgent, products = [] }) {
   if (!text) return null;
   if (!isAgent) {
     return <p className="message-content message-content--user">{text}</p>;
@@ -261,10 +286,65 @@ function ChatMessageContent({ text, isAgent }) {
           a: ({ node, ...props }) => (
             <a {...props} target="_blank" rel="noopener noreferrer" />
           ),
+          img: ({ node, ...props }) => (
+            <img {...props} alt={props.alt || "Assistant image"} loading="lazy" />
+          ),
         }}
       >
-        {text}
+        {stripDuplicateProductImages(text, products)}
       </ReactMarkdown>
+    </div>
+  );
+}
+
+function ProductCard({ item, onSelect }) {
+  const [imageFailed, setImageFailed] = useState(false);
+  const title = String(item?.name ?? "Product").replace(/\s*\(Demo\)\s*/gi, " ").trim();
+  const price = Number(item?.price_lkr);
+
+  return (
+    <article className="product-card">
+      <div className="product-card__image-box">
+        {item?.image_url && !imageFailed ? (
+          <img
+            src={item.image_url}
+            alt={item?.name || "Product"}
+            onError={() => setImageFailed(true)}
+          />
+        ) : (
+          <span className="product-card__image-fallback">Image unavailable</span>
+        )}
+      </div>
+      <div className="product-card__body">
+        {item?.variant && <span className="product-card__variant">{item.variant}</span>}
+        <h3 title={title}>{title}</h3>
+        <p className="product-card__price">
+          {Number.isFinite(price) ? `LKR ${price.toLocaleString("en-US")}` : "Price on request"}
+        </p>
+        <button
+          type="button"
+          className="product-card__action"
+          onClick={() => onSelect(`I want to buy ${item?.name || title} (${item?.sku || item?.product_id || "product"})`)}
+        >
+          Select / Buy
+        </button>
+      </div>
+    </article>
+  );
+}
+
+function ProductCards({ products, onSelect }) {
+  if (!Array.isArray(products) || products.length === 0) return null;
+
+  return (
+    <div className="product-cards" aria-label="Recommended products">
+      {products.map((item, index) => (
+        <ProductCard
+          key={item?.product_id || item?.sku || `${item?.name || "product"}-${index}`}
+          item={item}
+          onSelect={onSelect}
+        />
+      ))}
     </div>
   );
 }
@@ -309,7 +389,11 @@ async function sendToAI(type, message, sessionId, profile, updateConsent) {
   if (data?.success === false) throw new Error("Assistant could not complete the request");
   const reply = getWebhookReply(payload);
   if (typeof reply !== "string" || !reply.trim()) throw new Error("Invalid assistant reply");
-  return { reply, limited: data?.degraded === true || data?.service_status === "limited" };
+  return {
+    reply,
+    products: Array.isArray(data?.products) ? data.products : [],
+    limited: data?.degraded === true || data?.service_status === "limited",
+  };
 }
 
 function VisitorProfileModal({
@@ -605,10 +689,7 @@ function ServiceDetailPage({ service, onBack }) {
     setAvailability("Ready");
   };
 
-  const sendMessage = async (event) => {
-    event.preventDefault();
-    const chatInput = input.trim();
-
+  const submitMessage = async (chatInput) => {
     if (!chatInput || isSending || !isConnected) return;
 
     setInput("");
@@ -619,7 +700,7 @@ function ServiceDetailPage({ service, onBack }) {
     setIsSending(true);
 
     try {
-      const { reply, limited } = await sendToAI(
+      const { reply, products, limited } = await sendToAI(
         service.aiType,
         chatInput,
         sessionId.current,
@@ -629,7 +710,7 @@ function ServiceDetailPage({ service, onBack }) {
       setAvailability(limited ? "Limited support" : "Online");
       setMessages((current) => [
         ...current,
-        { id: `${Date.now()}-agent`, role: "agent", text: reply },
+        { id: `${Date.now()}-agent`, role: "agent", text: reply, products },
       ]);
     } catch (error) {
       setAvailability("Temporarily unavailable");
@@ -647,6 +728,13 @@ function ServiceDetailPage({ service, onBack }) {
       setIsSending(false);
     }
   };
+
+  const sendMessage = (event) => {
+    event.preventDefault();
+    submitMessage(input.trim());
+  };
+
+  const selectProduct = (message) => submitMessage(message);
 
   return (
     <main className="service-detail-page" style={{ "--service-accent": service.accent }}>
@@ -749,7 +837,14 @@ function ServiceDetailPage({ service, onBack }) {
                   <span className="message-bubble__label">
                     {message.role === "user" ? "You" : service.name}
                   </span>
-                  <ChatMessageContent text={message.text} isAgent={message.role === "agent"} />
+                  <ChatMessageContent
+                    text={message.text}
+                    isAgent={message.role === "agent"}
+                    products={message.products}
+                  />
+                  {message.role === "agent" && (
+                    <ProductCards products={message.products} onSelect={selectProduct} />
+                  )}
                   <small>Just now</small>
                 </div>
               </div>
