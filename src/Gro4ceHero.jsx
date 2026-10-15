@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import image01 from "../assets/1.jpg";
@@ -272,6 +273,126 @@ function stripDuplicateProductImages(text, products = []) {
     );
 }
 
+function ChatImage({ src, alt }) {
+  const [isOpen, setIsOpen] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [hasError, setHasError] = useState(false);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (e) => {
+      if (e.key === "Escape") setIsOpen(false);
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isOpen]);
+
+  if (hasError) {
+    return (
+      <div className="chat-image-error">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <circle cx="12" cy="12" r="10" />
+          <line x1="12" y1="8" x2="12" y2="12" />
+          <line x1="12" y1="16" x2="12.01" y2="16" />
+        </svg>
+        <span>Image preview unavailable</span>
+      </div>
+    );
+  }
+
+  const cleanAlt = alt && alt !== "Assistant image" ? alt : "";
+
+  return (
+    <>
+      <figure className="chat-image-card">
+        <button
+          type="button"
+          className="chat-image-preview-btn"
+          onClick={() => setIsOpen(true)}
+          title={cleanAlt ? `View ${cleanAlt} full size` : "Click to view full size"}
+          aria-label={cleanAlt ? `View ${cleanAlt} full size` : "View image full size"}
+        >
+          {!isLoaded && <div className="chat-image-skeleton" aria-hidden="true" />}
+          <img
+            src={src}
+            alt={cleanAlt || "Product image"}
+            loading="lazy"
+            className={`chat-image-element ${isLoaded ? "is-loaded" : ""}`}
+            onLoad={() => setIsLoaded(true)}
+            onError={() => setHasError(true)}
+          />
+          <span className="chat-image-badge" aria-hidden="true">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="11" cy="11" r="8" />
+              <line x1="21" y1="21" x2="16.65" y2="16.65" />
+              <line x1="11" y1="8" x2="11" y2="14" />
+              <line x1="8" y1="11" x2="14" y2="11" />
+            </svg>
+            <span>View</span>
+          </span>
+        </button>
+        {cleanAlt && (
+          <figcaption className="chat-image-caption" title={cleanAlt}>
+            {cleanAlt}
+          </figcaption>
+        )}
+      </figure>
+
+      {isOpen &&
+        createPortal(
+          <div
+            className="chat-image-lightbox"
+            role="dialog"
+            aria-modal="true"
+            aria-label={cleanAlt || "Full image preview"}
+            onClick={() => setIsOpen(false)}
+          >
+            <div
+              className="chat-image-lightbox__panel"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="chat-image-lightbox__header">
+                <span className="chat-image-lightbox__title">
+                  {cleanAlt || "Image Preview"}
+                </span>
+                <button
+                  type="button"
+                  className="chat-image-lightbox__close"
+                  onClick={() => setIsOpen(false)}
+                  aria-label="Close image preview"
+                >
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                    <line x1="18" y1="6" x2="6" y2="18" />
+                    <line x1="6" y1="6" x2="18" y2="18" />
+                  </svg>
+                </button>
+              </div>
+              <div className="chat-image-lightbox__image-wrap">
+                <img src={src} alt={cleanAlt || "Full size preview"} />
+              </div>
+              <div className="chat-image-lightbox__footer">
+                <a
+                  href={src}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="chat-image-lightbox__link"
+                >
+                  Open Original
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                    <polyline points="15 3 21 3 21 9" />
+                    <line x1="10" y1="14" x2="21" y2="3" />
+                  </svg>
+                </a>
+              </div>
+            </div>
+          </div>,
+          document.body
+        )}
+    </>
+  );
+}
+
 function ChatMessageContent({ text, isAgent, products = [] }) {
   if (!text) return null;
   if (!isAgent) {
@@ -283,11 +404,22 @@ function ChatMessageContent({ text, isAgent, products = [] }) {
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
         components={{
+          p: ({ node, children, ...props }) => {
+            const hasOnlyImage =
+              node?.children?.length === 1 &&
+              node.children[0].type === "element" &&
+              node.children[0].tagName === "img";
+
+            if (hasOnlyImage) {
+              return <div className="chat-image-block">{children}</div>;
+            }
+            return <p {...props}>{children}</p>;
+          },
           a: ({ node, ...props }) => (
             <a {...props} target="_blank" rel="noopener noreferrer" />
           ),
           img: ({ node, ...props }) => (
-            <img {...props} alt={props.alt || "Assistant image"} loading="lazy" />
+            <ChatImage src={props.src} alt={props.alt} />
           ),
         }}
       >
@@ -299,6 +431,7 @@ function ChatMessageContent({ text, isAgent, products = [] }) {
 
 function ProductCard({ item, onSelect }) {
   const [imageFailed, setImageFailed] = useState(false);
+  const [isLightboxOpen, setIsLightboxOpen] = useState(false);
   const title = String(item?.name ?? "Product").replace(/\s*\(Demo\)\s*/gi, " ").trim();
   const price = Number(item?.price_lkr);
 
@@ -306,11 +439,56 @@ function ProductCard({ item, onSelect }) {
     <article className="product-card">
       <div className="product-card__image-box">
         {item?.image_url && !imageFailed ? (
-          <img
-            src={item.image_url}
-            alt={item?.name || "Product"}
-            onError={() => setImageFailed(true)}
-          />
+          <>
+            <button
+              type="button"
+              className="product-card__image-btn"
+              onClick={() => setIsLightboxOpen(true)}
+              title={`View ${title}`}
+              aria-label={`View ${title} image`}
+            >
+              <img
+                src={item.image_url}
+                alt={item?.name || "Product"}
+                onError={() => setImageFailed(true)}
+                loading="lazy"
+              />
+            </button>
+            {isLightboxOpen &&
+              createPortal(
+                <div
+                  className="chat-image-lightbox"
+                  role="dialog"
+                  aria-modal="true"
+                  aria-label={title}
+                  onClick={() => setIsLightboxOpen(false)}
+                >
+                  <div
+                    className="chat-image-lightbox__panel"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <div className="chat-image-lightbox__header">
+                      <span className="chat-image-lightbox__title">{title}</span>
+                      <button
+                        type="button"
+                        className="chat-image-lightbox__close"
+                        onClick={() => setIsLightboxOpen(false)}
+                        aria-label="Close image preview"
+                      >
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                          <line x1="18" y1="6" x2="6" y2="18" />
+                          <line x1="6" y1="6" x2="18" y2="18" />
+                        </svg>
+                      </button>
+                    </div>
+                    <div className="chat-image-lightbox__image-wrap">
+                      <img src={item.image_url} alt={title} />
+                    </div>
+                  </div>
+                </div>,
+                document.body
+              )}
+          </>
         ) : (
           <span className="product-card__image-fallback">Image unavailable</span>
         )}
