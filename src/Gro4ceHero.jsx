@@ -26,7 +26,7 @@ import "./ChatMessage.css";
 const WEBHOOKS = {
   lankaElectroMart:
     import.meta.env.VITE_LANKA_ELECTRO_MART_WEBHOOK ||
-    "https://vmi3604779.contaboserver.net/webhook/lanka-electro-mart/chat",
+    "https://vmi3604779.contaboserver.net/webhook/38c36c82-4961-410d-b91a-5f0dd7c5ea8d",
   aiAcademy:
     import.meta.env.VITE_AI_ACADEMY_WEBHOOK ||
     "https://vmi3604779.contaboserver.net/webhook/academy/chat",

@@ -1,77 +1,40 @@
 {
-  "checkedAt": "2026-10-14T13:58:40.800Z",
-  "endpoint": "https://vmi3604779.contaboserver.net/webhook/38c36c82-4961-410d-b91a-5f0dd7c5ea8d",
+  "checkedAt": "2026-10-19T15:40:58.159Z",
+  "endpoint": "https://vmi3604779.contaboserver.net/webhook/lanka-electro-mart/chat",
   "origin": "https://agent-demo22.vercel.app",
   "probes": [
     {
       "name": "greeting",
       "message": "Hello. What can you help me with?",
-      "sessionId": "electro-diagnostic-95065172-10fa-4fa4-b456-6a55d127e8f7",
-      "requestId": "794c1b36-f38d-4b69-893b-1c14ce2947ed",
-      "status": 200,
+      "sessionId": "electro-diagnostic-b54b3b86-c2c7-43a8-bd47-db5cea7eb2e6",
+      "requestId": "57dab711-b399-4f88-a488-590935762084",
+      "status": 500,
       "corsPassed": true,
-      "success": true,
-      "intent": "discovery",
       "duplicate": false,
-      "reply": "Hi! I can help with:\n- finding products and prices\n- comparing models\n- checking demo stock by branch\n- warranty and policy info\n- preparing demo quotations for collection\n- looking up existing demo quotes, orders, or invoices\n\nJust tell me what you need, like a product type, model, or budget.",
+      "reply": "Error in workflow",
       "hasUnverifiedAmounts": false,
       "hasPrivateEnvelope": false,
-      "passed": true,
-      "elapsedMs": 9563
+      "passed": false,
+      "elapsedMs": 5905
     },
     {
       "name": "washing-machine",
       "message": "I need a washing machine for a family of five under LKR 180,000. What would you recommend, and why?",
-      "sessionId": "electro-diagnostic-b66ecbd3-569e-4543-a7d6-b7ebbb179528",
-      "requestId": "ee4d92e5-17d0-4c3a-8b28-9f07f7a9832e",
-      "status": 200,
+      "sessionId": "electro-diagnostic-b2f5e53e-0e21-4297-8cf1-a1491da0be41",
+      "requestId": "17ec4c37-8040-4071-bb76-fac700bf8fdc",
+      "status": 500,
       "corsPassed": true,
-      "success": true,
-      "intent": "recommendation",
       "duplicate": false,
-      "reply": "For a family of five, my top pick is LG Washer W06 Demo (9kg, front load) at LKR 121,410.\n\nWhy I’d recommend it:\n- 9kg capacity is a better fit for a family of five than 6–7kg models\n- Front load design is a strong middle ground if you want more capacity without going near your budget limit\n- It stays well under your LKR 180,000 cap\n\nGood alternatives:\n- Singer Washer W07 Demo — 10kg front load — LKR 148,410: better if you wash bulky loads often\n- Samsung Washer W05 Demo — 8kg front load — LKR 103,410: lower price, but a bit less room for larger family loads\n\nNote: these are demo catalog prices and stock records.",
+      "reply": "Error in workflow",
       "hasUnverifiedAmounts": false,
       "hasPrivateEnvelope": false,
-      "passed": true,
-      "elapsedMs": 15839
-    },
-    {
-      "name": "previous-budget-followup",
-      "message": "Would a 9kg model fit the budget I gave you?",
-      "sessionId": "electro-diagnostic-b66ecbd3-569e-4543-a7d6-b7ebbb179528",
-      "requestId": "45bb8fb7-b913-4611-8944-378fefcd81cf",
-      "status": 200,
-      "corsPassed": true,
-      "success": true,
-      "intent": "recommendation",
-      "duplicate": false,
-      "reply": "Yes — a 9kg model does fit your budget.\n\nThe 9kg option I verified is:\n- LG Washer W06 Demo — LKR 121,410\n\nThat is well under your LKR 180,000 limit, so it still looks like a strong fit for a family of five. Demo catalog note: price excludes delivery/services, and stock/records are synthetic.",
-      "hasUnverifiedAmounts": false,
-      "hasPrivateEnvelope": false,
-      "passed": true,
-      "elapsedMs": 13956
-    },
-    {
-      "name": "duplicate-followup",
-      "message": "Would a 9kg model fit the budget I gave you?",
-      "sessionId": "electro-diagnostic-b66ecbd3-569e-4543-a7d6-b7ebbb179528",
-      "requestId": "45bb8fb7-b913-4611-8944-378fefcd81cf",
-      "status": 200,
-      "corsPassed": true,
-      "success": true,
-      "intent": "duplicate",
-      "duplicate": true,
-      "reply": "Yes — a 9kg model does fit your budget.\n\nThe 9kg option I verified is:\n- LG Washer W06 Demo — LKR 121,410\n\nThat is well under your LKR 180,000 limit, so it still looks like a strong fit for a family of five. Demo catalog note: price excludes delivery/services, and stock/records are synthetic.",
-      "hasUnverifiedAmounts": false,
-      "hasPrivateEnvelope": false,
-      "passed": true,
-      "cachedReplyMatches": true,
-      "elapsedMs": 2258
+      "passed": false,
+      "elapsedMs": 7023
     }
   ],
   "preflight": {
     "status": 204,
     "passed": true
   },
-  "passed": true
+  "passed": false
 }
