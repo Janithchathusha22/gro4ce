@@ -26,7 +26,7 @@ import "./ChatMessage.css";
 const WEBHOOKS = {
   lankaElectroMart:
     import.meta.env.VITE_LANKA_ELECTRO_MART_WEBHOOK ||
-    "https://vmi3604779.contaboserver.net/webhook/38c36c82-4961-410d-b91a-5f0dd7c5ea8d",
+    "https://vmi3604779.contaboserver.net/webhook/lanka-electro-mart/chat",
   aiAcademy:
     import.meta.env.VITE_AI_ACADEMY_WEBHOOK ||
     "https://vmi3604779.contaboserver.net/webhook/academy/chat",
@@ -548,6 +548,20 @@ function getWebhookReply(payload) {
   );
 }
 
+function normalizeProduct(item) {
+  if (!item || typeof item !== "object") return null;
+  const imageUrl = item.image_url ?? item.imageUrl ?? item.image ?? item.thumbnail_url ?? item.thumbnail;
+  if (!imageUrl) return item;
+  return { ...item, image_url: imageUrl };
+}
+
+function getWebhookProducts(payload) {
+  const data = Array.isArray(payload) ? payload[0] : payload;
+  const candidates = [data?.products, data?.results, data?.items, data?.data?.products];
+  const products = candidates.find((value) => Array.isArray(value)) ?? [];
+  return products.map(normalizeProduct).filter(Boolean);
+}
+
 async function sendToAI(type, message, sessionId, profile, updateConsent) {
   const request = createWebhookRequest(WEBHOOKS, type, {
     message,
@@ -574,7 +588,7 @@ async function sendToAI(type, message, sessionId, profile, updateConsent) {
   if (typeof reply !== "string" || !reply.trim()) throw new Error("Invalid assistant reply");
   return {
     reply,
-    products: Array.isArray(data?.products) ? data.products : [],
+    products: getWebhookProducts(payload),
     limited: data?.degraded === true || data?.service_status === "limited",
   };
 }

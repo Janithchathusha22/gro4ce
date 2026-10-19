@@ -3,7 +3,7 @@ import { createWebhookRequest } from '../src/chatProfile.js';
 
 // Non-transactional inquiries and a duplicate retry using the website's builder.
 // These live calls can remain in the demo's conversation history.
-const endpoint = 'https://vmi3604779.contaboserver.net/webhook/38c36c82-4961-410d-b91a-5f0dd7c5ea8d';
+const endpoint = 'https://vmi3604779.contaboserver.net/webhook/lanka-electro-mart/chat';
 const origin = 'https://agent-demo22.vercel.app';
 const report = { checkedAt: new Date().toISOString(), endpoint, origin, probes: [] };
 const allowsOrigin = (response) => [origin, '*'].includes(response.headers.get('access-control-allow-origin'));
