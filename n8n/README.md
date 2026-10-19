@@ -1,5 +1,20 @@
 # Production workflow repairs — 2026-09-25
 
+## Lanka Electro Mart webhook response repair — 2026-10-19
+
+Fixed and published the active workflow `SVUWxQ2vIlM7kRuT` (`Lanka Electro
+Mart - Sales Agent N COPY`). The `Respond to Webhook` node had an extra `=` at
+the start of its expression (`=={{`), so n8n treated its response as invalid
+JSON after the agent and Supabase save had both succeeded. The node now uses
+the correct `={{ ... }}` expression. The separate V5 workflow
+`VQbdOkKZOi2Q4ds5` was inactive and was not changed.
+
+- Failing execution `974` confirmed the exact error in `Respond to Webhook`.
+- Published version: `95b2bf88-cafe-4be2-8e2c-91f49876fd68`.
+- Live greeting, product recommendation, same-session budget follow-up, and
+  duplicate retry all returned HTTP 200 with `success: true`; CORS passed.
+- `electro-webhook-diagnostics.json` contains the acceptance-check results.
+
 ## Lanka Electro Mart response format repair — 2026-10-12
 
 Repaired and published workflow `VQbdOkKZOi2Q4ds5` through the authenticated n8n

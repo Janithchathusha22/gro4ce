@@ -1,40 +1,77 @@
 {
-  "checkedAt": "2026-10-19T15:40:58.159Z",
-  "endpoint": "https://vmi3604779.contaboserver.net/webhook/lanka-electro-mart/chat",
+  "checkedAt": "2026-10-19T15:56:43.222Z",
+  "endpoint": "https://vmi3604779.contaboserver.net/webhook/38c36c82-4961-410d-b91a-5f0dd7c5ea8d",
   "origin": "https://agent-demo22.vercel.app",
   "probes": [
     {
       "name": "greeting",
       "message": "Hello. What can you help me with?",
-      "sessionId": "electro-diagnostic-b54b3b86-c2c7-43a8-bd47-db5cea7eb2e6",
-      "requestId": "57dab711-b399-4f88-a488-590935762084",
-      "status": 500,
+      "sessionId": "electro-diagnostic-c5fc1a1f-bfb4-4b67-856f-e8d20deaed38",
+      "requestId": "1e902932-7fa6-47ff-a10d-210370cd3c8d",
+      "status": 200,
       "corsPassed": true,
+      "success": true,
+      "intent": "discovery",
       "duplicate": false,
-      "reply": "Error in workflow",
+      "reply": "Hello! I can help you find products, check prices or branch stock, compare options, and look up quotes or orders. What are you looking for?",
       "hasUnverifiedAmounts": false,
       "hasPrivateEnvelope": false,
-      "passed": false,
-      "elapsedMs": 5905
+      "passed": true,
+      "elapsedMs": 13400
     },
     {
       "name": "washing-machine",
       "message": "I need a washing machine for a family of five under LKR 180,000. What would you recommend, and why?",
-      "sessionId": "electro-diagnostic-b2f5e53e-0e21-4297-8cf1-a1491da0be41",
-      "requestId": "17ec4c37-8040-4071-bb76-fac700bf8fdc",
-      "status": 500,
+      "sessionId": "electro-diagnostic-54bc74d8-296f-4450-88fd-b96436a0be96",
+      "requestId": "38ef722a-da08-404d-b0a8-05378cb2c49b",
+      "status": 200,
       "corsPassed": true,
+      "success": true,
+      "intent": "recommendation",
       "duplicate": false,
-      "reply": "Error in workflow",
+      "reply": "For a family of five, I’d recommend the **Panasonic Washer W08 Demo (12 kg, front-load)** at **LKR 179,910**—it fits your LKR 180,000 limit and offers the largest listed capacity, which can help with bigger family loads. The listing and price are synthetic demo data; delivery is not included, and the specs are not manufacturer-verified.",
       "hasUnverifiedAmounts": false,
       "hasPrivateEnvelope": false,
-      "passed": false,
-      "elapsedMs": 7023
+      "passed": true,
+      "elapsedMs": 17113
+    },
+    {
+      "name": "previous-budget-followup",
+      "message": "Would a 9kg model fit the budget I gave you?",
+      "sessionId": "electro-diagnostic-54bc74d8-296f-4450-88fd-b96436a0be96",
+      "requestId": "6ebc284a-613b-4498-9c37-5d02d19406f9",
+      "status": 200,
+      "corsPassed": true,
+      "success": true,
+      "intent": "recommendation",
+      "duplicate": false,
+      "reply": "Yes. The 9kg LG Washer W06 Demo is listed at LKR 121,410, within your LKR 180,000 budget. That price is synthetic demo data; delivery is excluded, and the specifications aren’t manufacturer-verified.",
+      "hasUnverifiedAmounts": false,
+      "hasPrivateEnvelope": false,
+      "passed": true,
+      "elapsedMs": 14834
+    },
+    {
+      "name": "duplicate-followup",
+      "message": "Would a 9kg model fit the budget I gave you?",
+      "sessionId": "electro-diagnostic-54bc74d8-296f-4450-88fd-b96436a0be96",
+      "requestId": "6ebc284a-613b-4498-9c37-5d02d19406f9",
+      "status": 200,
+      "corsPassed": true,
+      "success": true,
+      "intent": "duplicate",
+      "duplicate": true,
+      "reply": "Yes. The 9kg LG Washer W06 Demo is listed at LKR 121,410, within your LKR 180,000 budget. That price is synthetic demo data; delivery is excluded, and the specifications aren’t manufacturer-verified.",
+      "hasUnverifiedAmounts": false,
+      "hasPrivateEnvelope": false,
+      "passed": true,
+      "cachedReplyMatches": true,
+      "elapsedMs": 1966
     }
   ],
   "preflight": {
     "status": 204,
     "passed": true
   },
-  "passed": false
+  "passed": true
 }
